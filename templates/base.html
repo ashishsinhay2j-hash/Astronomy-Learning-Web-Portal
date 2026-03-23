@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Astronomy Learning Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #0b0c2a;
+            color: white;
+        }
+
+        .navbar {
+            background-color: #11144c;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .navbar a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            color: #00d4ff;
+        }
+
+        .container {
+            padding: 40px;
+            
+        }
+
+       .card {
+    background-color: #1c1f5a;
+    padding: 25px;
+    border-radius: 10px;
+    width: 60%;   /* increase width */
+    margin: auto;
+    text-align: left;
+}
+        .card p {
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+.card h3 {
+    color: #00d4ff;
+    margin-top: 20px;
+}
+       input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+input[type="radio"] {
+    width: auto;
+    margin-right: 8px;
+}
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #00d4ff;
+            color: black;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #00aacc;
+        }
+
+        footer {
+    margin-top: 50px;
+    padding: 15px;
+    background-color: #11144c;
+}
+
+/* move this outside */
+.option {
+    
+    margin: 8px 0;
+}
+.option input {
+    margin-right: 10px;
+}
+.option label {
+    cursor: pointer;
+}
+
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <a href="/">Home</a>
+
+    {% if session.get("user") %}
+        <a href="/planets">Planets</a>
+        <a href="/stars">Stars</a>
+        <a href="/galaxies">Galaxies</a>
+<a href="/blackholes">Black Holes</a>
+        <a href="/quiz">Quiz</a>
+        <a href="/progress">Progress</a>
+        <a href="/logout">Logout</a>
+        <span>Welcome, {{ session.get("user") }}</span>
+    {% else %}
+        <a href="/register">Register</a>
+        <a href="/login">Login</a>
+    {% endif %}
+</div>
+<div class="container">
+    {% block content %}
+    
+    {% endblock %}
+</div>
+
+<footer>
+    © 2026 Astronomy Learning Web Portal
+</footer>
+
+</body>
+</html>

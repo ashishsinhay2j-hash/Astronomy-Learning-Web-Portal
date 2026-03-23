@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+
+    <h2>Your Dashboard</h2>
+
+    <!-- ✅ ADD HERE -->
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
+
+    <p><b>Total Attempts:</b> {{ total_attempts }}</p>
+    <p><b>Best Score:</b> {{ best_score }}</p>
+    <p><b>Average Score:</b> {{ average_score }}</p>
+
+    <hr>
+
+    <h3>All Attempts:</h3>
+
+    {% for s in scores %}
+        <p>Score: {{ s.score }} / {{ s.total }}</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}
