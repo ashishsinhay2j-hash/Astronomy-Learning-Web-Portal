@@ -18,11 +18,11 @@ def get_db():
         user=os.environ.get("DB_USER"),
         password=os.environ.get("DB_PASSWORD"),
         database=os.environ.get("DB_NAME"),
-        port=int(os.environ.get("DB_PORT"))
+        port=int(os.environ.get("DB_PORT")),
+        ssl_disabled=False   # ✅ IMPORTANT FIX
     )
 
 
-cursor = get_db().cursor(dictionary=True)
 
 # ---------------- HOME ----------------
 @app.route("/")
@@ -38,6 +38,8 @@ def register():
         password = request.form["password"]
 
         # check duplicate
+        db = get_db()
+        cursor = db.cursor(dictionary=True)
         cursor.execute("SELECT * FROM users WHERE username=%s OR email=%s", (username, email))
         if cursor.fetchone():
             return "User already exists"
@@ -60,6 +62,8 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
+        db = get_db()
+        cursor = db.cursor(dictionary=True)
         cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
         user = cursor.fetchone()
 
@@ -94,6 +98,8 @@ def admin():
     if session.get("role") != 1:
         return "Access Denied"
 
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT * FROM users")
     users = cursor.fetchall()
 
@@ -108,6 +114,8 @@ def add_topic():
     if request.method == "POST":
         topic_name = request.form["topic_name"]
 
+        db = get_db()
+        cursor = db.cursor(dictionary=True)
         cursor.execute("INSERT INTO topics (topic_name) VALUES (%s)", (topic_name,))
         get_db().commit()
 
@@ -121,6 +129,8 @@ def courses():
     if not session.get("user"):
         return redirect("/login")
 
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT * FROM courses")
     courses = cursor.fetchall()
 
@@ -132,6 +142,8 @@ def complete_lesson(lesson_id):
     if not session.get("user"):
         return redirect("/login")
 
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
     cursor.execute(
         "INSERT INTO progress (user_id, lesson_id, status) VALUES (%s,%s,'completed')",
         (session["user_id"], lesson_id))
@@ -152,6 +164,8 @@ def progress():
 
     user_id = session["user_id"]
 
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
     # get attempts
     cursor.execute("SELECT * FROM quiz_attempts WHERE user_id=%s", (user_id,))
     attempts = cursor.fetchall()
@@ -186,6 +200,8 @@ def leaderboard():
     if not session.get("user"):
         return redirect("/login")
 
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
     cursor.execute("""
         SELECT users.username, SUM(quiz_attempts.score) AS total_score
         FROM quiz_attempts
@@ -226,6 +242,8 @@ def quiz(quiz_id):
     if not session.get("user"):
         return redirect("/login")
 
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
     # get questions
     cursor.execute("SELECT * FROM questions WHERE quiz_id=%s", (quiz_id,))
     questions = cursor.fetchall()
