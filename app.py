@@ -1,17 +1,12 @@
-from flask import Flask, render_template, request, redirect, session, url_for
+```python
+from flask import Flask, render_template, request, redirect, session
 import mysql.connector
+import os
 
 app = Flask(__name__)
 app.secret_key = "secret"
 
-import os
-@app.route("/")
-def home():
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("SELECT 1")
-    return "Working"
-
+# ---------------- DB CONNECTION ----------------
 def get_db():
     return mysql.connector.connect(
         host=os.environ.get("DB_HOST"),
@@ -19,10 +14,8 @@ def get_db():
         password=os.environ.get("DB_PASSWORD"),
         database=os.environ.get("DB_NAME"),
         port=int(os.environ.get("DB_PORT")),
-        ssl_disabled=False   # ✅ IMPORTANT FIX
+        ssl_disabled=False
     )
-
-
 
 # ---------------- HOME ----------------
 @app.route("/")
@@ -37,9 +30,9 @@ def register():
         email = request.form["email"]
         password = request.form["password"]
 
-        # check duplicate
         db = get_db()
         cursor = db.cursor(dictionary=True)
+
         cursor.execute("SELECT * FROM users WHERE username=%s OR email=%s", (username, email))
         if cursor.fetchone():
             return "User already exists"
@@ -48,14 +41,13 @@ def register():
             "INSERT INTO users (username,email,password,role_id) VALUES (%s,%s,%s,2)",
             (username, email, password)
         )
-        cursor.connection.commit()
+        db.commit()
 
         return redirect("/login")
 
     return render_template("register.html")
 
 # ---------------- LOGIN ----------------
-
 @app.route("/login", methods=["GET","POST"])
 def login():
     if request.method == "POST":
@@ -64,6 +56,7 @@ def login():
 
         db = get_db()
         cursor = db.cursor(dictionary=True)
+
         cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
         user = cursor.fetchone()
 
@@ -73,12 +66,9 @@ def login():
         if user["password"] != password:
             return "Wrong password"
 
-        # ✅ set session AFTER login
         session["user"] = user["username"]
         session["user_id"] = user["user_id"]
         session["role"] = user["role_id"]
-
-        print("LOGGED IN:", user["username"], "ROLE:", user["role_id"])
 
         return redirect("/dashboard")
 
@@ -89,10 +79,9 @@ def login():
 def dashboard():
     if not session.get("user"):
         return redirect("/login")
-
     return render_template("dashboard.html")
 
-# ---------------- Admin Dashboard ----------------
+# ---------------- ADMIN ----------------
 @app.route("/admin")
 def admin():
     if session.get("role") != 1:
@@ -105,7 +94,7 @@ def admin():
 
     return render_template("admin.html", users=users)
 
-# ---------------- Add TOPICS ----------------
+# ---------------- ADD TOPIC ----------------
 @app.route("/add_topic", methods=["GET", "POST"])
 def add_topic():
     if session.get("role") != 1:
@@ -115,15 +104,16 @@ def add_topic():
         topic_name = request.form["topic_name"]
 
         db = get_db()
-        cursor = db.cursor(dictionary=True)
+        cursor = db.cursor()
+
         cursor.execute("INSERT INTO topics (topic_name) VALUES (%s)", (topic_name,))
-        get_db().commit()
+        db.commit()
 
         return "Topic Added"
 
     return render_template("add_topic.html")
 
-#-------------------Courses----------------------
+# ---------------- COURSES ----------------
 @app.route("/courses")
 def courses():
     if not session.get("user"):
@@ -131,32 +121,30 @@ def courses():
 
     db = get_db()
     cursor = db.cursor(dictionary=True)
+
     cursor.execute("SELECT * FROM courses")
     courses = cursor.fetchall()
 
     return render_template("courses.html", courses=courses)
 
-#---------------- Lesson Complete ----------------
+# ---------------- COMPLETE LESSON ----------------
 @app.route("/complete/<int:lesson_id>")
 def complete_lesson(lesson_id):
     if not session.get("user"):
         return redirect("/login")
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
+
     cursor.execute(
         "INSERT INTO progress (user_id, lesson_id, status) VALUES (%s,%s,'completed')",
-        (session["user_id"], lesson_id))
-    cursor.execute(
-    "SELECT * FROM progress WHERE user_id=%s AND lesson_id=%s",
-    (session["user_id"], lesson_id)
-)
- 
-    get_db().commit()
+        (session["user_id"], lesson_id)
+    )
 
+    db.commit()
     return "Lesson Completed"
 
-#---------------- Progress ----------------
+# ---------------- PROGRESS ----------------
 @app.route("/progress")
 def progress():
     if not session.get("user"):
@@ -166,23 +154,15 @@ def progress():
 
     db = get_db()
     cursor = db.cursor(dictionary=True)
-    # get attempts
+
     cursor.execute("SELECT * FROM quiz_attempts WHERE user_id=%s", (user_id,))
     attempts = cursor.fetchall()
 
     total_attempts = len(attempts)
+    best_score = max([a["score"] for a in attempts], default=0)
+    total_score = sum([a["score"] for a in attempts])
+    average_score = total_score / total_attempts if total_attempts else 0
 
-    best_score = 0
-    total_score = 0
-
-    for a in attempts:
-        total_score += a["score"]
-        if a["score"] > best_score:
-            best_score = a["score"]
-
-    average_score = total_score / total_attempts if total_attempts > 0 else 0
-
-    # completed lessons
     cursor.execute("SELECT COUNT(*) as total FROM progress WHERE user_id=%s", (user_id,))
     completed = cursor.fetchone()["total"]
 
@@ -194,7 +174,7 @@ def progress():
         completed=completed
     )
 
-#---------------- Leaderboard ----------------
+# ---------------- LEADERBOARD ----------------
 @app.route("/leaderboard")
 def leaderboard():
     if not session.get("user"):
@@ -202,6 +182,7 @@ def leaderboard():
 
     db = get_db()
     cursor = db.cursor(dictionary=True)
+
     cursor.execute("""
         SELECT users.username, SUM(quiz_attempts.score) AS total_score
         FROM quiz_attempts
@@ -214,7 +195,7 @@ def leaderboard():
 
     return render_template("leaderboard.html", data=data)
 
-#---------------- Certificate ----------------
+# ---------------- CERTIFICATE ----------------
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 
@@ -229,13 +210,13 @@ def certificate():
     styles = getSampleStyleSheet()
 
     content = []
-
     content.append(Paragraph("Certificate of Completion", styles["Title"]))
     content.append(Paragraph(f"This is to certify that {session['user']} has completed the course.", styles["Normal"]))
 
     doc.build(content)
 
     return f"Certificate generated: {filename}"
+
 # ---------------- QUIZ ----------------
 @app.route("/quiz/<int:quiz_id>", methods=["GET","POST"])
 def quiz(quiz_id):
@@ -244,7 +225,7 @@ def quiz(quiz_id):
 
     db = get_db()
     cursor = db.cursor(dictionary=True)
-    # get questions
+
     cursor.execute("SELECT * FROM questions WHERE quiz_id=%s", (quiz_id,))
     questions = cursor.fetchall()
 
@@ -256,48 +237,38 @@ def quiz(quiz_id):
         score = 0
         total = len(questions)
 
-        # create attempt
         cursor.execute(
             "INSERT INTO quiz_attempts (user_id,quiz_id,score,total) VALUES (%s,%s,0,%s)",
             (session["user_id"], quiz_id, total)
         )
-        cursor.connection.commit()
+        db.commit()
 
         attempt_id = cursor.lastrowid
 
-        # loop answers
         for q in questions:
             selected = request.form.get(f"q{q['question_id']}")
 
             if selected:
-                cursor.execute(
-                    "SELECT * FROM options WHERE option_id=%s",
-                    (selected,)
-                )
+                cursor.execute("SELECT * FROM options WHERE option_id=%s", (selected,))
                 opt = cursor.fetchone()
 
                 if opt and opt["is_correct"]:
                     score += 1
 
-                # save answer
                 cursor.execute(
                     "INSERT INTO user_answers (attempt_id,question_id,selected_option) VALUES (%s,%s,%s)",
                     (attempt_id, q["question_id"], selected)
                 )
 
-        # update score
         cursor.execute(
             "UPDATE quiz_attempts SET score=%s WHERE attempt_id=%s",
             (score, attempt_id)
         )
-        cursor.connection.commit()
+        db.commit()
 
         return render_template("result.html", score=score, total=total)
 
     return render_template("quiz.html", questions=questions)
-
-
-
 
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
@@ -305,8 +276,8 @@ def logout():
     session.clear()
     return redirect("/")
 
-import os
-
+# ---------------- RUN ----------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=port)
+```
