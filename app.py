@@ -5,17 +5,24 @@ app = Flask(__name__)
 app.secret_key = "secret"
 
 import os
+@app.route("/")
+def home():
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT 1")
+    return "Working"
 
-db = mysql.connector.connect(
-    host=os.environ.get("DB_HOST"),
-    user=os.environ.get("DB_USER"),
-    password=os.environ.get("DB_PASSWORD"),
-    database=os.environ.get("DB_NAME"),
-    port=int(os.environ.get("DB_PORT", 3306))
-)
+def get_db():
+    return mysql.connector.connect(
+        host=os.environ.get("DB_HOST"),
+        user=os.environ.get("DB_USER"),
+        password=os.environ.get("DB_PASSWORD"),
+        database=os.environ.get("DB_NAME"),
+        port=int(os.environ.get("DB_PORT"))
+    )
 
 
-cursor = db.cursor(dictionary=True)
+cursor = get_db().cursor(dictionary=True)
 
 # ---------------- HOME ----------------
 @app.route("/")
@@ -39,7 +46,7 @@ def register():
             "INSERT INTO users (username,email,password,role_id) VALUES (%s,%s,%s,2)",
             (username, email, password)
         )
-        db.commit()
+        cursor.connection.commit()
 
         return redirect("/login")
 
@@ -102,7 +109,7 @@ def add_topic():
         topic_name = request.form["topic_name"]
 
         cursor.execute("INSERT INTO topics (topic_name) VALUES (%s)", (topic_name,))
-        db.commit()
+        get_db().commit()
 
         return "Topic Added"
 
@@ -133,7 +140,7 @@ def complete_lesson(lesson_id):
     (session["user_id"], lesson_id)
 )
  
-    db.commit()
+    get_db().commit()
 
     return "Lesson Completed"
 
@@ -236,7 +243,7 @@ def quiz(quiz_id):
             "INSERT INTO quiz_attempts (user_id,quiz_id,score,total) VALUES (%s,%s,0,%s)",
             (session["user_id"], quiz_id, total)
         )
-        db.commit()
+        cursor.connection.commit()
 
         attempt_id = cursor.lastrowid
 
@@ -265,7 +272,7 @@ def quiz(quiz_id):
             "UPDATE quiz_attempts SET score=%s WHERE attempt_id=%s",
             (score, attempt_id)
         )
-        db.commit()
+        cursor.connection.commit()
 
         return render_template("result.html", score=score, total=total)
 
