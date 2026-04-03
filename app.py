@@ -14,8 +14,10 @@ def get_db():
         user=os.environ.get("DB_USER"),
         password=os.environ.get("DB_PASSWORD"),
         database=os.environ.get("DB_NAME"),
-        port=int(os.environ.get("DB_PORT", 3306)),
+        port=int(os.environ.get("DB_PORT")),
+        auth_plugin='mysql_native_password',   # ⭐ VERY IMPORTANT      
         ssl_disabled=True
+        
     )
     
 
