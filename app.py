@@ -1,4 +1,4 @@
-
+app.debug = True
 from flask import Flask, render_template, request, redirect, session
 import mysql.connector
 import os
@@ -57,31 +57,33 @@ def register():
 # ---------------- LOGIN ----------------
 @app.route("/login", methods=["GET","POST"])
 def login():
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+    try:
+        if request.method == "POST":
+            username = request.form["username"]
+            password = request.form["password"]
 
-        db = get_db()
-        cursor = db.cursor(dictionary=True)
+            db = get_db()
+            cursor = db.cursor(dictionary=True)
 
-        cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
-        user = cursor.fetchone()
+            cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
+            user = cursor.fetchone()
 
-        if not user:
-            return render_template("login.html", error="User not found")
+            if not user:
+                return "User not found"
 
-        if user["password"] != password:
-            return render_template("login.html", error="Wrong password")
+            if user["password"] != password:
+                return "Wrong password"
 
-        session["user"] = user["username"]
-        session["user_id"] = user["user_id"]
-        session["role"] = user["role_id"]
+            session["user"] = user["username"]
+            session["user_id"] = user["user_id"]
+            session["role"] = user["role_id"]
 
-        return redirect("/dashboard")
+            return redirect("/dashboard")
 
-    return render_template("login.html")
+        return render_template("login.html")
 
-    return render_template("login.html")
+    except Exception as e:
+        return str(e)
 
 # ---------------- DASHBOARD ----------------
 @app.route("/dashboard")
