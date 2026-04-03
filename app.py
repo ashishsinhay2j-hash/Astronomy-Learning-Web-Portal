@@ -15,8 +15,7 @@ def get_db():
         password=os.environ.get("DB_PASSWORD"),
         database=os.environ.get("DB_NAME"),
         port=int(os.environ.get("DB_PORT")),
-        auth_plugin='mysql_native_password',
-        connection_timeout=10
+        ssl_ca="/etc/ssl/certs/ca-certificates.crt"
     )
 
 @app.route("/testdb")
