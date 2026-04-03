@@ -1,13 +1,14 @@
-<h2>Quiz Result</h2>
+{% extends "base.html" %}
 
-<p>Your Score: {{ score }} / {{ total }}</p>
+{% block content %}
 
-{% if score == total %}
-<p>Excellent 🎉</p>
-{% elif score > total/2 %}
-<p>Good 👍</p>
-{% else %}
-<p>Keep practicing 💪</p>
-{% endif %}
+<div class="card">
+    <h2>Quiz Result 🎯</h2>
 
-<a href="/dashboard">Back to Dashboard</a>
+    <p>Your Score: <b>{{ score }} / {{ total }}</b></p>
+
+    <br>
+    <a href="/dashboard" class="button">Go to Dashboard</a>
+</div>
+
+{% endblock %}
