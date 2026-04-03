@@ -1,0 +1,8 @@
+<h2>Leaderboard 🏆</h2>
+
+{% for user in data %}
+<p>{{ loop.index }}. {{ user.username }} - {{ user.total_score }}</p>
+{% endfor %}
+
+<br>
+<a href="/dashboard">Back</a>

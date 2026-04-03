@@ -3,35 +3,71 @@
 <head>
     <title>Astronomy Learning Portal</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #0b0c2a;
-            color: white;
-        }
+       body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    background: #0b0c2a;
+    color: white;
+}
 
-        .navbar {
-            background-color: #11144c;
-            padding: 15px;
-            text-align: center;
-        }
+.navbar {
+    background: #11144c;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
 
-        .navbar a {
-            color: white;
-            margin: 0 15px;
-            text-decoration: none;
-            font-weight: bold;
-        }
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
 
-        .navbar a:hover {
-            color: #00d4ff;
-        }
+.navbar a:hover {
+    color: #00d4ff;
+}
 
-        .container {
-            padding: 40px;
-            
-        }
+.container {
+    padding: 30px;
+}
 
+/* CARD DESIGN */
+.card {
+    background: #1c1f5a;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 15px auto;
+    width: 70%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    transition: 0.3s;
+}
+h2 {
+    text-align: center;
+    color: #00d4ff;
+}
+
+iframe {
+    border-radius: 10px;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+button, a.button {
+    display: inline-block;
+    padding: 10px 15px;
+    background: #00d4ff;
+    color: black;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+button:hover, a.button:hover {
+    background: #00aacc;
+}
        .card {
     background-color: #1c1f5a;
     padding: 25px;
@@ -100,19 +136,19 @@ input[type="radio"] {
 <div class="navbar">
     <a href="/">Home</a>
 
-    {% if session.get("user") %}
-        <a href="/planets">Planets</a>
-        <a href="/stars">Stars</a>
-        <a href="/galaxies">Galaxies</a>
-<a href="/blackholes">Black Holes</a>
-        <a href="/quiz">Quiz</a>
-        <a href="/progress">Progress</a>
-        <a href="/logout">Logout</a>
-        <span>Welcome, {{ session.get("user") }}</span>
-    {% else %}
-        <a href="/register">Register</a>
-        <a href="/login">Login</a>
+{% if session.get("user") %}
+    <a href="/dashboard">Dashboard</a>
+    <a href="/courses">Courses</a>
+    <a href="/logout">Logout</a>
+    <a href="/courses">Courses</a>
+
+    {% if session.get("role") == 1 %}
+        <a href="/admin">Admin</a>
     {% endif %}
+{% else %}
+    <a href="/login">Login</a>
+    <a href="/register">Register</a>
+{% endif %}
 </div>
 <div class="container">
     {% block content %}

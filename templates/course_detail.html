@@ -1,0 +1,14 @@
+<h2>Course Lessons</h2>
+
+{% for l in lessons %}
+<div style="margin:20px;">
+    <h3>{{ l.title }}</h3>
+
+    <iframe width="400" height="250"
+    src="{{ l.video_url }}"></iframe>
+
+    <br><br>
+
+    <a href="/complete/{{ l.lesson_id }}">Mark Complete</a>
+</div>
+{% endfor %}

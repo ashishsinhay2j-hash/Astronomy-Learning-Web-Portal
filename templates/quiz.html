@@ -9,35 +9,24 @@
 {% for q in questions %}
 
 <div style="margin-bottom: 25px;">
+    <p><b>{{ q.question_text }}</b></p>
 
-    <p><b>{{ loop.index }}. {{ q.question_text }}</b></p>
-
-    <div class="option">
-        <label>
-            <input type="radio" name="q{{ q.question_id }}" value="{{ q.option1 }}">
-            {{ q.option1 }}
-        </label>
-    </div>
-
-    <div class="option">
-        <label>
-            <input type="radio" name="q{{ q.question_id }}" value="{{ q.option2 }}">
-            {{ q.option2 }}
-        </label>
-    </div>
-
-    <div class="option">
-        <label>
-            <input type="radio" name="q{{ q.question_id }}" value="{{ q.option3 }}">
-            {{ q.option3 }}
-        </label>
-    </div>
-
+    {% for opt in q.options %}
+        <div class="option">
+            <label>
+                <input type="radio"
+                       name="q{{ q.question_id }}"
+                       value="{{ opt.option_id }}">
+                {{ opt.option_text }}
+            </label>
+        </div>
+    {% endfor %}
 </div>
 
 {% endfor %}
 
 <button type="submit">Submit Quiz</button>
+
 
 </form>
 

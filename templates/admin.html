@@ -1,0 +1,10 @@
+<h2>Admin Dashboard</h2>
+
+<h3>All Users</h3>
+
+{% for u in users %}
+<p>{{ u.username }} - {{ u.email }}</p>
+{% endfor %}
+
+<br>
+<a href="/add_topic">Add Topic</a>
