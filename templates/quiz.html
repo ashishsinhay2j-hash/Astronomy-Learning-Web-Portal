@@ -4,7 +4,7 @@
 
 <div class="card">
 
-<form method="POST">
+<form method="POST" action="{{ url_for('quiz', quiz_id=quiz_id) }}">
 
 {% for q in questions %}
 
@@ -16,7 +16,8 @@
             <label>
                 <input type="radio"
                        name="q{{ q.question_id }}"
-                       value="{{ opt.option_id }}">
+                       value="{{ opt.option_id }}"
+                       required>
                 {{ opt.option_text }}
             </label>
         </div>
@@ -26,7 +27,6 @@
 {% endfor %}
 
 <button type="submit">Submit Quiz</button>
-
 
 </form>
 

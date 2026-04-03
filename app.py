@@ -68,16 +68,18 @@ def login():
         user = cursor.fetchone()
 
         if not user:
-            return "User not found"
+            return render_template("login.html", error="User not found")
 
         if user["password"] != password:
-            return "Wrong password"
+            return render_template("login.html", error="Wrong password")
 
         session["user"] = user["username"]
         session["user_id"] = user["user_id"]
         session["role"] = user["role_id"]
 
         return redirect("/dashboard")
+
+    return render_template("login.html")
 
     return render_template("login.html")
 
@@ -275,7 +277,8 @@ def quiz(quiz_id):
 
         return render_template("result.html", score=score, total=total)
 
-    return render_template("quiz.html", questions=questions)
+    # ✅ IMPORTANT FIX HERE
+    return render_template("quiz.html", questions=questions, quiz_id=quiz_id)
 
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
