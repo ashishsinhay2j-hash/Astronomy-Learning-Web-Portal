@@ -134,7 +134,8 @@ def course_detail(course_id):
 
     for t in topics:
         cursor.execute("SELECT * FROM lessons WHERE topic_id=%s", (t["topic_id"],))
-        t["lessons"] = cursor.fetchall()
+        lessons = cursor.fetchall()
+        t["lessons"] = lessons if lessons else []
 
     return render_template("course_detail.html", topics=topics)
 
