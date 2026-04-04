@@ -77,12 +77,63 @@ def login():
             session["user_id"] = user["user_id"]
             session["role"] = user["role_id"]
 
-            return redirect("/dashboard")
+            if user["role_id"] == 1:
+                return redirect("/admin")
+            elif user["role_id"] == 3:
+                return redirect("/teacher")
+            else:
+                return redirect("/dashboard")
 
         return render_template("login.html")
 
     except Exception as e:
         return str(e)
+#---------------- fORGET PASSWORD ----------------
+import uuid
+
+@app.route("/forgot", methods=["GET","POST"])
+def forgot():
+    if request.method == "POST":
+        email = request.form["email"]
+
+        token = str(uuid.uuid4())
+
+        db = get_db()
+        cursor = db.cursor()
+
+        cursor.execute(
+            "UPDATE users SET reset_token=%s WHERE email=%s",
+            (token, email)
+        )
+        db.commit()
+
+        return f"Reset link: /reset/{token}"
+
+    return render_template("forgot.html")
+#---------------- RESET PASSWORD ----------------
+@app.route("/reset/<token>", methods=["GET","POST"])
+def reset(token):
+    if request.method == "POST":
+        new_password = request.form["password"]
+
+        db = get_db()
+        cursor = db.cursor()
+
+        cursor.execute(
+            "UPDATE users SET password=%s WHERE reset_token=%s",
+            (new_password, token)
+        )
+        db.commit()
+
+        return redirect("/login")
+
+    return render_template("reset.html")
+#---------------- TEACHER ----------------
+@app.route("/teacher")
+def teacher():
+    if session.get("role") != 3:
+        return "Access Denied"
+    return render_template("teacher.html")
 
 # ---------------- DASHBOARD ----------------
 @app.route("/dashboard")
