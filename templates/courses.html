@@ -7,7 +7,10 @@
 {% for c in courses %}
 <div class="card">
     <h3>{{ c.course_name }}</h3>
-    <a href="/course/{{ c.course_id }}" class="button">Start Course</a>
+
+    <a href="/enroll/{{ c.course_id }}" class="button">Enroll</a>
+    <a href="/course/{{ c.course_id }}" class="button">View</a>
+    <a href="/quiz/{{ c.course_id }}" class="button">Quiz</a>
 </div>
 {% endfor %}
 

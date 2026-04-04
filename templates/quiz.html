@@ -25,7 +25,9 @@
 </div>
 
 {% endfor %}
-
+{% if questions|length == 0 %}
+    <p>No questions available</p>
+{% endif %}
 <button type="submit">Submit Quiz</button>
 
 </form>

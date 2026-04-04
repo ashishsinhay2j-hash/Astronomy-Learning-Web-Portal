@@ -1,8 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 <div class="card">
-    <h2>Your Progress</h2>
+    <h2>Your Progress 📊</h2>
 
     <p>Total Attempts: {{ total_attempts }}</p>
     <p>Best Score: {{ best_score }}</p>
     <p>Average Score: {{ average_score }}</p>
     <p>Lessons Completed: {{ completed }}</p>
 </div>
+
+{% endblock %}
