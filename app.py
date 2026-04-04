@@ -14,7 +14,7 @@ def get_db():
         user=os.environ.get("MYSQLUSER"),
         password=os.environ.get("MYSQLPASSWORD"),
         database=os.environ.get("MYSQLDATABASE"),
-        port=int(os.environ.get("MYSQLPORT"))
+        port=int(os.environ.get("MYSQLPORT",))
     )
 @app.route("/testdb")
 def testdb():
@@ -234,7 +234,14 @@ def certificate():
 def quiz(quiz_id):
     if not session.get("user"):
         return redirect("/login")
+    
+    quiz_id = request.args.get("quiz_id")
 
+    if quiz_id:
+       quiz_id = int(quiz_id)
+
+    else:
+       return "Quiz ID missing"
     db = get_db()
     cursor = db.cursor(dictionary=True)
 
@@ -271,6 +278,7 @@ def quiz(quiz_id):
                     "INSERT INTO user_answers (attempt_id,question_id,selected_option) VALUES (%s,%s,%s)",
                     (attempt_id, q["question_id"], selected)
                 )
+
 
         cursor.execute(
             "UPDATE quiz_attempts SET score=%s WHERE attempt_id=%s",
