@@ -1,14 +1,26 @@
-<h2>Course Lessons</h2>
+{% extends "base.html" %}
 
-{% for l in lessons %}
-<div style="margin:20px;">
-    <h3>{{ l.title }}</h3>
+{% block content %}
 
-    <iframe width="400" height="250"
-    src="{{ l.video_url }}"></iframe>
+<h2>Course Content 📚</h2>
 
-    <br><br>
+{% for t in topics %}
+<div class="card">
+    <h3>{{ t.topic_name }}</h3>
 
-    <a href="/complete/{{ l.lesson_id }}">Mark Complete</a>
+    {% for l in t.lessons %}
+        <div style="margin-bottom:20px;">
+            <h4>{{ l.title }}</h4>
+
+            <iframe width="100%" height="300"
+            src="{{ l.video_url }}" allowfullscreen></iframe>
+
+            <br><br>
+
+            <a href="/complete/{{ l.lesson_id }}" class="button">Mark Complete</a>
+        </div>
+    {% endfor %}
 </div>
 {% endfor %}
+
+{% endblock %}

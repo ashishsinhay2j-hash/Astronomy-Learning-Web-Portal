@@ -124,18 +124,19 @@ def add_topic():
     return render_template("add_topic.html")
 
 # ---------------- COURSES ----------------
-@app.route("/courses")
-def courses():
-    if not session.get("user"):
-        return redirect("/login")
-
+@app.route("/course/<int:course_id>")
+def course_detail(course_id):
     db = get_db()
     cursor = db.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM courses")
-    courses = cursor.fetchall()
+    cursor.execute("SELECT * FROM topics WHERE course_id=%s", (course_id,))
+    topics = cursor.fetchall()
 
-    return render_template("courses.html", courses=courses)
+    for t in topics:
+        cursor.execute("SELECT * FROM lessons WHERE topic_id=%s", (t["topic_id"],))
+        t["lessons"] = cursor.fetchall()
+
+    return render_template("course_detail.html", topics=topics)
 
 # ---------------- COMPLETE LESSON ----------------
 @app.route("/complete/<int:lesson_id>")

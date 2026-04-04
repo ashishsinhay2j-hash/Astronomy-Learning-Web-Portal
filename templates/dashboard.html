@@ -1,8 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 <div class="card">
     <h2>Welcome {{ session.get("user") }} 👋</h2>
-
+<p>Course Progress: 60%</p>
+<p>{{ c.description }}</p>
+<img src="{{ c.thumbnail }}" width="100%">
     <a href="/courses" class="button">Courses</a>
     <a href="/quiz/1" class="button">Quiz</a>
     <a href="/progress" class="button">Progress</a>
     <a href="/leaderboard" class="button">Leaderboard</a>
 </div>
+
+{% endblock %}
