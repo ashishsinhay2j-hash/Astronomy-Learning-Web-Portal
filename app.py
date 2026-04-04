@@ -234,14 +234,8 @@ def certificate():
 def quiz(quiz_id):
     if not session.get("user"):
         return redirect("/login")
+
     
-    quiz_id = request.args.get("quiz_id")
-
-    if quiz_id:
-       quiz_id = int(quiz_id)
-
-    else:
-       return "Quiz ID missing"
     db = get_db()
     cursor = db.cursor(dictionary=True)
 
