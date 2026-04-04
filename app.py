@@ -14,7 +14,7 @@ def get_db():
         user=os.environ.get("MYSQLUSER"),
         password=os.environ.get("MYSQLPASSWORD"),
         database=os.environ.get("MYSQLDATABASE"),
-        port=int(os.environ.get("MYSQLPORT", 3306))
+        port=int(os.environ.get("MYSQLPORT", 5000))
     )
 @app.route("/testdb")
 def testdb():
