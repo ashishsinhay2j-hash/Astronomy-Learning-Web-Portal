@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="color: #e67e22;"><i class="fas fa-chalkboard-teacher"></i> Teacher Dashboard</h2>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+    <div class="card">
+        <h3><i class="fas fa-edit"></i> Curriculum Management</h3>
+        <p>Manage your Astronomy lessons, upload video URLs, and update quiz banks.</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+            <div style="padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px; border: 1px solid #444;">
+                <h4 style="margin-top: 0; color: var(--primary);">Lesson Editor</h4>
+                <p style="font-size: 0.8rem;">Update star charts and astrophysical theories.</p>
+                <a href="#" class="btn" style="font-size: 0.8rem;">Open Editor</a>
+            </div>
+            <div style="padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px; border: 1px solid #444;">
+                <h4 style="margin-top: 0; color: #2ecc71;">Quiz Creator</h4>
+                <p style="font-size: 0.8rem;">Add challenging questions to test students.</p>
+                <a href="#" class="btn" style="font-size: 0.8rem; background: #2ecc71;">New Quiz</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3><i class="fas fa-comment-dots"></i> Student Feedback</h3>
+        <div style="background: #0b0c2a; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+            <small style="color: var(--primary);">Amit Kumar:</small>
+            <p style="margin: 5px 0; font-size: 0.85rem;">"The Black Hole video was amazing!"</p>
+        </div>
+        <div style="background: #0b0c2a; padding: 10px; border-radius: 8px;">
+            <small style="color: var(--primary);">Navya:</small>
+            <p style="margin: 5px 0; font-size: 0.85rem;">"Quiz 3 was very difficult, need help."</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

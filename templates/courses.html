@@ -1,17 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h2 style="text-align: center; color: var(--primary); margin-bottom: 30px;">
+    <i class="fas fa-microscope"></i> Explore Astronomy Modules
+</h2>
 
-<h2>Courses</h2>
-
-{% for c in courses %}
-<div class="card">
-    <h3>{{ c.course_name }}</h3>
-
-    <a href="/enroll/{{ c.course_id }}" class="button">Enroll</a>
-    <a href="/course/{{ c.course_id }}" class="button">View</a>
-    <a href="/quiz/{{ c.course_id }}" class="button">Quiz</a>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+    {% for c in courses %}
+    <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+            <h3 style="color: var(--primary); margin-top: 0;">{{ c.course_name }}</h3>
+            <p style="font-size: 0.9rem; color: #ccc; line-height: 1.4;">
+                Dive deep into the wonders of the cosmos with our expert-led curriculum.
+            </p>
+        </div>
+        
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <a href="/course/{{ c.course_id }}" class="btn" style="flex: 1; text-align: center;">
+                <i class="fas fa-play"></i> View
+            </a>
+            <a href="/quiz/{{ c.course_id }}" class="btn" style="flex: 1; text-align: center; background: #9b59b6; color: white;">
+                <i class="fas fa-stopwatch"></i> Quiz
+            </a>
+        </div>
+    </div>
+    {% endfor %}
 </div>
-{% endfor %}
 
+{% if not courses %}
+    <div class="card" style="text-align: center; padding: 50px;">
+        <p style="color: #888;">No courses are currently available in the star charts.</p>
+    </div>
+{% endif %}
 {% endblock %}

@@ -1,23 +1,37 @@
 {% extends "base.html" %}
-
 {% block content %}
-
-<h2>Course Content 📚</h2>
-
-{% for t in topics %}
-<div class="card">
-    <h3>{{ t.topic_name }}</h3>
-
-    {% for l in t.lessons %}
-        <div style="margin-bottom:20px;">
-            <h4>{{ l.title }}</h4>
-
-           
-
-            <a href="/complete/{{ l.lesson_id }}" class="button">Mark Complete</a>
+<div style="display: flex; gap: 30px;">
+    <div style="flex: 1; max-width: 250px;">
+        <h3 style="color: var(--primary); margin-top: 0;"><i class="fas fa-list"></i> Modules</h3>
+        {% for t in topics %}
+        <div class="card" style="padding: 12px; margin-bottom: 10px; border-left: 4px solid var(--primary); font-size: 0.9rem;">
+            {{ t.topic_name }}
         </div>
-    {% endfor %}
-</div>
-{% endfor %}
+        {% endfor %}
+    </div>
 
+    <div style="flex: 3;">
+        {% for t in topics %}
+            {% for l in t.lessons %}
+            <div class="card">
+                <h2>{{ l.title }}</h2>
+                
+                {% if l.video_url %}
+                <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 10px; margin-bottom: 20px;">
+                    <iframe style="position: absolute; top:0; left:0; width:100%; height:100%;" 
+                            src="{{ l.video_url }}" frameborder="0" allowfullscreen></iframe>
+                </div>
+                {% endif %}
+
+                <p style="color: #ccc; line-height: 1.8;">{{ l.content if l.content else "Detailed astrophysical data for this lesson is being updated by the faculty." }}</p>
+                
+                <div style="margin-top: 25px; border-top: 1px solid #333; padding-top: 20px; display: flex; justify-content: space-between;">
+                    <a href="/complete/{{ l.lesson_id }}" class="btn"><i class="fas fa-check-double"></i> Mark Complete</a>
+                    <a href="/quiz/{{ t.topic_id }}" class="btn" style="background: #e74c3c; color: white;">Take Assessment</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

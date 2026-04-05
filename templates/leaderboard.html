@@ -1,13 +1,48 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="card" style="max-width: 800px; margin: auto;">
+    <h2 style="text-align: center; margin-bottom: 30px;">
+        <i class="fas fa-trophy" style="color: #f1c40f;"></i> Galactic Rankings
+    </h2>
+    
+    <div style="margin-top: 10px;">
+        {% for user in data %}
+            {# Set a class name based on the rank #}
+            {% set rank_class = "rank-" ~ loop.index if loop.index <= 3 else "rank-default" %}
 
-<div class="card">
-    <h2>Leaderboard 🏆</h2>
+            <div class="leaderboard-row {{ rank_class }}" 
+                 style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.2); margin-bottom: 12px; border-radius: 8px;">
+                
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="font-weight: bold; font-size: 1.2rem; width: 30px; color: #888;">#{{ loop.index }}</span>
+                    <span style="font-size: 1.1rem;">{{ user.username }}</span>
+                </div>
 
-    {% for user in data %}
-    <p>{{ loop.index }}. {{ user.username }} - {{ user.total_score }}</p>
-    {% endfor %}
+                <div style="text-align: right;">
+                    <span style="font-weight: bold; color: var(--primary); font-size: 1.3rem;">{{ user.total_score }}</span>
+                    <span style="display: block; font-size: 0.7rem; color: #aaa; text-transform: uppercase;">Total Points</span>
+                </div>
+            </div>
+        {% endfor %}
+
+        {% if not data %}
+        <div style="text-align: center; padding: 40px; color: #888;">
+            <p>No explorers have ranked yet.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/dashboard" class="btn">Return to Dashboard</a>
+    </div>
 </div>
 
+{# Move CSS logic here to satisfy the IDE validator #}
+<style>
+    .leaderboard-row { border-left: 5px solid #444444; }
+    .rank-1 { border-left-color: #f1c40f !important; }
+    .rank-2 { border-left-color: #bdc3c7 !important; }
+    .rank-3 { border-left-color: #cd7f32 !important; }
+</style>
 {% endblock %}

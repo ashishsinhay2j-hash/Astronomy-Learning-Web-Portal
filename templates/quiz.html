@@ -1,37 +1,37 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="card" style="max-width: 850px; margin: auto;">
+    <h2 style="text-align: center; color: var(--primary); margin-bottom: 30px;">
+        <i class="fas fa-brain"></i> Mission Assessment
+    </h2>
 
-<div class="card">
+    <form method="POST" action="{{ url_for('quiz', quiz_id=quiz_id) }}">
+        {% for q in questions %}
+        <div style="margin-bottom: 35px; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 10px;">
+            <p style="font-size: 1.1rem; margin-top: 0;">
+                <span style="color: var(--primary); font-weight: bold; margin-right: 10px;">Q{{ loop.index }}.</span>
+                {{ q.question_text }}
+            </p>
 
-<form method="POST" action="{{ url_for('quiz', quiz_id=quiz_id) }}">
-
-{% for q in questions %}
-
-<div style="margin-bottom: 25px;">
-    <p><b>{{ q.question_text }}</b></p>
-
-    {% for opt in q.options %}
-        <div class="option">
-            <label>
-                <input type="radio"
-                       name="q{{ q.question_id }}"
-                       value="{{ opt.option_id }}"
-                       required>
-                {{ opt.option_text }}
-            </label>
+            <div style="margin-top: 15px; display: grid; gap: 10px;">
+                {% for opt in q.options %}
+                <label style="display: flex; align-items: center; padding: 12px; background: #0b0c2a; border: 1px solid #333; border-radius: 8px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='#333'">
+                    <input type="radio" name="q{{ q.question_id }}" value="{{ opt.option_id }}" required style="width: auto; margin-right: 15px;">
+                    {{ opt.option_text }}
+                </label>
+                {% endfor %}
+            </div>
         </div>
-    {% endfor %}
+        {% endfor %}
+
+        {% if questions|length > 0 %}
+            <button type="submit" class="btn" style="width: 100%; padding: 15px; font-size: 1.1rem;">
+                <i class="fas fa-paper-plane"></i> Submit Mission Report
+            </button>
+        {% else %}
+            <p style="text-align: center; color: #888;">No questions found in this assessment module.</p>
+        {% endif %}
+    </form>
 </div>
-
-{% endfor %}
-{% if questions|length == 0 %}
-    <p>No questions available</p>
-{% endif %}
-<button type="submit">Submit Quiz</button>
-
-</form>
-
-</div>
-
 {% endblock %}

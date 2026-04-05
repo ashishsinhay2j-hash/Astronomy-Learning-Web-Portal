@@ -1,28 +1,27 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="card">
-    <h2>User Login</h2>
-    {% if error %}
-<p style="color:red;">{{ error }}</p>
-{% endif %}
+<div class="card" style="max-width: 450px; margin: auto;">
+    <h2 style="text-align: center;">Mission Control Login</h2>
     
-<form method="POST">
-    <input type="text" name="username" placeholder="Username" required>
+    <form method="POST">
+        <label>Email Address</label>
+        <input type="email" name="username" placeholder="name@example.com" required>
 
-    <input type="password" name="password" placeholder="Password" required>
+        <label>Access Password</label>
+        <input type="password" name="password" placeholder="••••••••" required>
 
-    <!-- 👇 ADD HERE -->
-    <select name="role">
-        <option value="2">Student</option>
-        <option value="3">Teacher</option>
-    </select>
+        <label>Access Role</label>
+        <select name="role">
+            <option value="2">Student</option>
+            <option value="3">Teacher</option>
+            <option value="1">Admin</option>
+        </select>
 
-    <button type="submit">Login</button>
-</form>
-
-<br>
-
-<a href="/forgot">Forgot Password?</a>
+        <button type="submit" class="btn" style="width: 100%; margin-top: 20px;">Launch Dashboard</button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="/forgot" style="color: var(--primary); font-size: 14px;">Lost your access key?</a>
+    </div>
 </div>
 {% endblock %}
