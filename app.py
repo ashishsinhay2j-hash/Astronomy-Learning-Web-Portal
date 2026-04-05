@@ -57,41 +57,38 @@ def register():
 @app.route("/login", methods=["GET","POST"])
 def login():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        role = request.form["role"]   # ✅ added
+    username = request.form["username"]
+    password = request.form["password"]
+    role = request.form.get("role")   # ✅ safe
 
-        db = get_db()
-        cursor = db.cursor(dictionary=True)
+    if not role:
+        return render_template("login.html", error="Select role")
 
-        cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
-        user = cursor.fetchone()
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
 
-        if not user:
-            return render_template("login.html", error="User not found")
+    cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
+    user = cursor.fetchone()
 
-        if user["password"] != password:
-            return render_template("login.html", error="Wrong password")
+    if not user:
+        return render_template("login.html", error="User not found")
 
-        # ✅ role check
-        if str(user["role_id"]) != role:
-            return render_template("login.html", error="Wrong role selected")
+    if user["password"] != password:
+        return render_template("login.html", error="Wrong password")
 
-        session["user"] = user["username"]
-        session["user_id"] = user["user_id"]
-        session["role"] = user["role_id"]
+    if str(user["role_id"]) != role:
+        return render_template("login.html", error="Wrong role selected")
 
-        # ✅ role-based redirect
-        if user["role_id"] == 1:
-            return redirect("/admin")
-        elif user["role_id"] == 3:
-            return redirect("/teacher")
-        else:
-            return redirect("/dashboard")
+    session["user"] = user["username"]
+    session["user_id"] = user["user_id"]
+    session["role"] = user["role_id"]
 
-    return render_template("login.html")
-
-        
+    if user["role_id"] == 1:
+        return redirect("/admin")
+    elif user["role_id"] == 3:
+        return redirect("/teacher")
+    else:
+        return redirect("/dashboard")
 #---------------- fORGET PASSWORD ----------------
 import uuid
 
