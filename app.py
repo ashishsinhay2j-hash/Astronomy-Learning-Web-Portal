@@ -57,9 +57,9 @@ def register():
 @app.route("/login", methods=["GET","POST"])
 def login():
     if request.method == "POST":
-    username = request.form["username"]
-    password = request.form["password"]
-    role = request.form.get("role")   # ✅ safe
+       username = request.form["username"]
+       password = request.form["password"]
+       role = request.form.get("role")   # ✅ safe
 
     if not role:
         return render_template("login.html", error="Select role")
