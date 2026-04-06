@@ -160,7 +160,22 @@ def reset(token):
         return redirect("/login")
 
     return render_template("reset.html")
+#------------Delete----------------
+@app.route("/delete_account")
+@login_required
+def delete_account():
+    db = get_db()
+    cursor = db.cursor()
 
+    cursor.execute("DELETE FROM users WHERE user_id=%s", (session["user_id"],))
+    db.commit()
+
+    cursor.close()
+    db.close()
+
+    session.clear()
+
+    return redirect("/")
 # ---------------- PANELS ----------------
 @app.route("/admin")
 @login_required

@@ -3,19 +3,21 @@
 <div class="card" style="max-width: 450px; margin: 40px auto; border-top: 5px solid var(--primary);">
     <h2 style="text-align: center;"><i class="fas fa-user-plus"></i> Recruit Explorer</h2>
     
-    <form method="POST" action="{{ url_for('register') }}"></form>
-        <label style="font-size: 0.8rem; font-weight: bold; color: var(--primary);">USERNAME</label>
-        <input type="text" name="username" placeholder="Choose your callsign" required>
+    <form method="POST">
 
-        <label style="font-size: 0.8rem; font-weight: bold; color: var(--primary);">EMAIL ADDRESS</label>
-        <input type="email" name="email" placeholder="explorer@galaxy.com" required>
-
-        <label style="font-size: 0.8rem; font-weight: bold; color: var(--primary);">SECURE PASSWORD</label>
-        <input type="password" name="password" placeholder="••••••••" required>
-
-        <button type="submit" class="btn" style="width: 100%; margin-top: 20px; padding: 15px;">Initiate Launch</button>
-    </form>
     {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+    <input type="text" name="username" placeholder="Enter Username" required>
+
+    <input type="email" name="email" placeholder="Enter Email" required>
+
+    <input type="password" name="password" placeholder="Enter Password" required>
+
+    <button type="submit" class="btn">Register</button>
+
+</form>
 <p style="color:red;">{{ error }}</p>
 {% endif %}
     <p style="text-align: center; font-size: 0.9rem; margin-top: 20px;">

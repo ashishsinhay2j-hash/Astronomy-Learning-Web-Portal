@@ -140,6 +140,14 @@
         <a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
         <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
         <a href="/leaderboard">Leaderboard</a>
+        <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        {% if session.get("user") %}
+    <a href="/delete_account" 
+       style="color:#ff4d4d;"
+       onclick="return confirm('Delete your account permanently?')">
+       <i class="fas fa-user-times"></i> Delete
+    </a>
+{% endif %}
     {% endif %}
 </nav>
 
