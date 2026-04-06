@@ -50,9 +50,14 @@ def roles_required(*roles):
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        username = request.form["username"]
-        email = request.form["email"]
-        password = generate_password_hash(request.form["password"])
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        if not username or not email or not password:
+            return render_template("register.html", error="All fields required")
+
+        hashed = generate_password_hash(password)
 
         db = get_db()
         cursor = db.cursor(dictionary=True)
@@ -62,8 +67,8 @@ def register():
             return render_template("register.html", error="Email already exists")
 
         cursor.execute(
-            "INSERT INTO users (username, email, password, role_id) VALUES (%s,%s,%s,2)",
-            (username, email, password)
+            "INSERT INTO users (username,email,password,role_id) VALUES (%s,%s,%s,2)",
+            (username, email, hashed)
         )
         db.commit()
 
@@ -288,30 +293,7 @@ def quiz(quiz_id):
     db.close()
 
     return render_template("quiz.html", questions=questions, quiz_id=quiz_id)
-from werkzeug.security import generate_password_hash
 
-@app.route("/fix_passwords")
-def fix_passwords():
-    db = get_db()
-    cursor = db.cursor(dictionary=True)
-
-    cursor.execute("SELECT user_id, password FROM users")
-    users = cursor.fetchall()
-
-    for u in users:
-        # skip already hashed
-        if not u["password"].startswith("scrypt"):
-            hashed = generate_password_hash(u["password"])
-            cursor.execute(
-                "UPDATE users SET password=%s WHERE user_id=%s",
-                (hashed, u["user_id"])
-            )
-
-    db.commit()
-    cursor.close()
-    db.close()
-
-    return "Passwords updated!"
 
 # ---------------- CERTIFICATE ----------------
 @app.route("/certificate")

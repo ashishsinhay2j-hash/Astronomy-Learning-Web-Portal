@@ -15,7 +15,9 @@
 
         <button type="submit" class="btn" style="width: 100%; margin-top: 20px; padding: 15px;">Initiate Launch</button>
     </form>
-    
+    {% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
     <p style="text-align: center; font-size: 0.9rem; margin-top: 20px;">
         Already registered? <a href="/login" style="color: var(--primary); text-decoration: none;">Login to Station</a>
     </p>
