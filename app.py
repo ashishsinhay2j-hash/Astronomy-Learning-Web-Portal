@@ -1,3 +1,5 @@
+print("MYSQLHOST:", os.environ.get("MYSQLHOST"))
+print("MYSQLPORT:", os.environ.get("MYSQLPORT"))
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 import mysql.connector
 from mysql.connector import pooling
@@ -11,13 +13,14 @@ app.secret_key = os.environ.get("FLASK_SECRET", "super-secret-key")
 app.config["DEBUG"] = True
 
 # ---------------- DATABASE ----------------
-db_config = {
-    "host": os.environ.get("MYSQLHOST", "localhost"),
-    "user": os.environ.get("MYSQLUSER", "root"),
-    "password": os.environ.get("MYSQLPASSWORD", ""),
-    "database": os.environ.get("MYSQLDATABASE", ""),
-    "port": int(os.environ.get("MYSQLPORT", 3306))
-}
+def get_db():
+    return mysql.connector.connect(
+        host=os.environ["MYSQLHOST"],   # ❗ no default
+        user=os.environ["MYSQLUSER"],
+        password=os.environ["MYSQLPASSWORD"],
+        database=os.environ["MYSQLDATABASE"],
+        port=int(os.environ["MYSQLPORT"])
+    )
 
 
 
