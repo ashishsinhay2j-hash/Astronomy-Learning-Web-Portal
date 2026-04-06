@@ -1,27 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
-    <div class="card">
-        <h2>Welcome back, {{ session.get("user") }}! 👨‍🚀</h2>
-        <p>You are currently enrolled in <b>3 Astronomy Modules</b>.</p>
-        
-        <div style="background: #0b0c2a; border-radius: 10px; height: 25px; width: 100%; margin: 15px 0;">
-            <div style="background: var(--primary); height: 100%; width: 65%; border-radius: 10px; text-align: center; font-size: 14px; color: black; font-weight: bold;">65% Overall Progress</div>
-        </div>
-        
-        <div style="display: flex; gap: 10px; margin-top: 20px;">
-            <a href="/courses" class="btn">Continue Learning</a>
-            <a href="/progress" class="btn" style="background: #9b59b6; color: white;">View Analytics</a>
-        </div>
-    </div>
 
-    <div class="card">
-        <h3>Quick Links</h3>
-        <ul style="list-style: none; padding: 0;">
-            <li style="margin-bottom: 10px;"><a href="/leaderboard" style="color: var(--primary); text-decoration: none;"><i class="fas fa-trophy"></i> Global Leaderboard</a></li>
-            <li style="margin-bottom: 10px;"><a href="/certificate" style="color: var(--primary); text-decoration: none;"><i class="fas fa-certificate"></i> My Certificates</a></li>
-            <li><a href="/forgot" style="color: var(--primary); text-decoration: none;"><i class="fas fa-key"></i> Security Settings</a></li>
-        </ul>
-    </div>
+<h2>Welcome back, {{ session.get("user") }} 👨‍🚀</h2>
+
+<h3 style="margin-top:30px;">Your Courses</h3>
+
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap:20px;">
+
+{% for c in courses %}
+<div class="card">
+    <h3>{{ c.title }}</h3>
+    <p>{{ c.description }}</p>
+
+    <a href="/course/{{ c.course_id }}" class="btn">View Course</a>
 </div>
+{% endfor %}
+
+</div>
+
 {% endblock %}

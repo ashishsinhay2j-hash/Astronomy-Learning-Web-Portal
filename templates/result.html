@@ -1,14 +1,25 @@
 {% extends "base.html" %}
-
 {% block content %}
 
-<div class="card">
+<div class="card" style="text-align:center;">
+
     <h2>Quiz Result 🎯</h2>
 
-    <p>Your Score: <b>{{ score }} / {{ total }}</b></p>
+    <h1 style="color: var(--primary); font-size: 3rem;">
+        {{ score }} / {{ total }}
+    </h1>
+
+    {% if score >= total/2 %}
+        <p style="color: #2ecc71;">Great job! 🚀</p>
+    {% else %}
+        <p style="color: #e74c3c;">Keep learning and try again 💪</p>
+    {% endif %}
 
     <br>
-    <a href="/dashboard" class="button">Go to Dashboard</a>
+
+    <a href="/dashboard" class="btn">Dashboard</a>
+    <a href="/leaderboard" class="btn" style="background:#9b59b6;">Leaderboard</a>
+
 </div>
 
 {% endblock %}

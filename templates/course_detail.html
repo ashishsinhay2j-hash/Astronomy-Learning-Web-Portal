@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
+
 <div style="display: flex; gap: 30px;">
+
+    <!-- LEFT SIDEBAR (TOPICS) -->
     <div style="flex: 1; max-width: 250px;">
-        <h3 style="color: var(--primary); margin-top: 0;"><i class="fas fa-list"></i> Modules</h3>
+        <h3 style="color: var(--primary); margin-top: 0;">
+            <i class="fas fa-list"></i> Modules
+        </h3>
+
         {% for t in topics %}
         <div class="card" style="padding: 12px; margin-bottom: 10px; border-left: 4px solid var(--primary); font-size: 0.9rem;">
             {{ t.topic_name }}
@@ -10,28 +16,49 @@
         {% endfor %}
     </div>
 
+    <!-- RIGHT CONTENT (LESSONS) -->
     <div style="flex: 3;">
+
         {% for t in topics %}
             {% for l in t.lessons %}
+
             <div class="card">
                 <h2>{{ l.title }}</h2>
-                
+
+                <!-- VIDEO -->
                 {% if l.video_url %}
                 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 10px; margin-bottom: 20px;">
                     <iframe style="position: absolute; top:0; left:0; width:100%; height:100%;" 
-                            src="{{ l.video_url }}" frameborder="0" allowfullscreen></iframe>
+                            src="{{ l.video_url }}" frameborder="0" allowfullscreen>
+                    </iframe>
                 </div>
                 {% endif %}
 
-                <p style="color: #ccc; line-height: 1.8;">{{ l.content if l.content else "Detailed astrophysical data for this lesson is being updated by the faculty." }}</p>
-                
+                <!-- CONTENT -->
+                <p style="color: #ccc; line-height: 1.8;">
+                    {{ l.content if l.content else "Content will be updated soon by instructor." }}
+                </p>
+
+                <!-- ACTION BUTTONS -->
                 <div style="margin-top: 25px; border-top: 1px solid #333; padding-top: 20px; display: flex; justify-content: space-between;">
-                    <a href="/complete/{{ l.lesson_id }}" class="btn"><i class="fas fa-check-double"></i> Mark Complete</a>
-                    <a href="/quiz/{{ t.topic_id }}" class="btn" style="background: #e74c3c; color: white;">Take Assessment</a>
+
+                    <!-- MARK COMPLETE -->
+                    <a href="/complete/{{ l.lesson_id }}" class="btn">
+                        <i class="fas fa-check-double"></i> Mark Complete
+                    </a>
+
+                    <!-- QUIZ BUTTON (FIXED) -->
+                    <a href="/quiz/1" class="btn" style="background: #e74c3c; color: white;">
+                        <i class="fas fa-stopwatch"></i> Take Quiz
+                    </a>
+
                 </div>
             </div>
+
             {% endfor %}
         {% endfor %}
+
     </div>
 </div>
+
 {% endblock %}

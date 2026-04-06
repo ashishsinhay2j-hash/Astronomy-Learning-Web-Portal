@@ -3,7 +3,7 @@
 <div class="card" style="max-width: 450px; margin: 40px auto; border-top: 5px solid var(--primary);">
     <h2 style="text-align: center;"><i class="fas fa-user-plus"></i> Recruit Explorer</h2>
     
-    <form method="POST">
+    <form method="POST" action="{{ url_for('register') }}"></form>
         <label style="font-size: 0.8rem; font-weight: bold; color: var(--primary);">USERNAME</label>
         <input type="text" name="username" placeholder="Choose your callsign" required>
 

@@ -17,7 +17,7 @@
             <div style="margin-top: 15px; display: grid; gap: 10px;">
                 {% for opt in q.options %}
                 <label style="display: flex; align-items: center; padding: 12px; background: #0b0c2a; border: 1px solid #333; border-radius: 8px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='#333'">
-                    <input type="radio" name="q{{ q.question_id }}" value="{{ opt.option_id }}" required style="width: auto; margin-right: 15px;">
+                    <input type="radio" name="q{{ q.question_id }}" value="{{ opt.option_id }}"  style="width: auto; margin-right: 15px;">
                     {{ opt.option_text }}
                 </label>
                 {% endfor %}
