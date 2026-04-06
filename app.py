@@ -135,7 +135,7 @@ def forgot():
         cursor.close()
         db.close()
 
-        return f"Reset link: /reset/{token}"
+        return render_template("forgot.html", link=f"/reset/{token}")
 
     return render_template("forgot.html")
 

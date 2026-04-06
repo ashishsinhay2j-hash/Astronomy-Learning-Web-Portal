@@ -9,6 +9,12 @@
         <input type="email" name="email" placeholder="Enter your email" required>
         <button type="submit">Reset Password</button>
     </form>
+    {% if link %}
+    <div style="margin-top:20px; text-align:center;">
+        <p>Password reset link:</p>
+        <a href="{{ link }}" class="btn">Reset Password</a>
+    </div>
+{% endif %}
 </div>
 
 {% endblock %}
