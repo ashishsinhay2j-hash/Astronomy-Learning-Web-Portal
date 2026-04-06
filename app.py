@@ -1,8 +1,6 @@
-print("MYSQLHOST:", os.environ.get("MYSQLHOST"))
-print("MYSQLPORT:", os.environ.get("MYSQLPORT"))
+
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 import mysql.connector
-from mysql.connector import pooling
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 import os
