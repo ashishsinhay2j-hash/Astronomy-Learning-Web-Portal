@@ -376,20 +376,21 @@ def course_detail(course_id):
     db = get_db()
     cursor = db.cursor(dictionary=True)
 
-    # get topics
-    cursor.execute(
-    "SELECT * FROM lessons WHERE topic_id=%s AND pdf_url IS NOT NULL",
-    (t["topic_id"],)
-)
+    # ✅ Step 1: get topics for this course
+    cursor.execute("SELECT * FROM topics WHERE course_id=%s", (course_id,))
     topics = cursor.fetchall()
 
-    # get lessons inside each topic
+    # ✅ Step 2: get lessons inside each topic
     for t in topics:
-        cursor.execute("SELECT * FROM lessons WHERE topic_id=%s", (t["topic_id"],))
+        cursor.execute(
+            "SELECT * FROM lessons WHERE topic_id=%s",
+            (t["topic_id"],)
+        )
         t["lessons"] = cursor.fetchall()
 
     cursor.close()
     db.close()
+
     return render_template("course_detail.html", topics=topics)
 #----------------course route ----------------
 @app.route("/courses")
