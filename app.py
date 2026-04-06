@@ -82,7 +82,6 @@ def login():
         password = request.form.get("password")
         role = request.form.get("role")
 
-        # ✅ prevent crash
         if not email or not password or not role:
             return render_template("login.html", error="All fields required")
 
@@ -94,21 +93,24 @@ def login():
         cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
         user = cursor.fetchone()
 
-        if user and check_password_hash(user["password"], password):
-            if user["role_id"] == selected_role:
-                session["user"] = user["username"]
-                session["user_id"] = user["user_id"]
-                session["role"] = user["role_id"]
+        if user:
+            # support both hashed + plain password
+            if check_password_hash(user["password"], password) or user["password"] == password:
 
-                return redirect(
-                    "/admin" if user["role_id"] == 1
-                    else "/teacher" if user["role_id"] == 3
-                    else "/dashboard"
-                )
-            else:
-                return render_template("login.html", error="Wrong role selected")
+                if user["role_id"] == selected_role:
+                    session["user"] = user["username"]
+                    session["user_id"] = user["user_id"]
+                    session["role"] = user["role_id"]
 
-        return render_template("login.html", error="Invalid credentials")
+                    return redirect(
+                        "/admin" if user["role_id"] == 1
+                        else "/teacher" if user["role_id"] == 3
+                        else "/dashboard"
+                    )
+                else:
+                    return render_template("login.html", error="Wrong role selected")
+
+        return render_template("login.html", error="Invalid email or password")
 
     return render_template("login.html")
 
