@@ -288,6 +288,30 @@ def quiz(quiz_id):
     db.close()
 
     return render_template("quiz.html", questions=questions, quiz_id=quiz_id)
+from werkzeug.security import generate_password_hash
+
+@app.route("/fix_passwords")
+def fix_passwords():
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("SELECT user_id, password FROM users")
+    users = cursor.fetchall()
+
+    for u in users:
+        # skip already hashed
+        if not u["password"].startswith("scrypt"):
+            hashed = generate_password_hash(u["password"])
+            cursor.execute(
+                "UPDATE users SET password=%s WHERE user_id=%s",
+                (hashed, u["user_id"])
+            )
+
+    db.commit()
+    cursor.close()
+    db.close()
+
+    return "Passwords updated!"
 
 # ---------------- CERTIFICATE ----------------
 @app.route("/certificate")
