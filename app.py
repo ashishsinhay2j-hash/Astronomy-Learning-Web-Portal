@@ -19,10 +19,7 @@ db_config = {
     "port": int(os.environ.get("MYSQLPORT", 3306))
 }
 
-db_pool = pooling.MySQLConnectionPool(pool_name="mypool", pool_size=5, **db_config)
 
-def get_db():
-    return db_pool.get_connection()
 
 # ---------------- HOME ----------------
 @app.route("/")
