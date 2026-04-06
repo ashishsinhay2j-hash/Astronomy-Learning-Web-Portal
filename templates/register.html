@@ -1,27 +1,35 @@
 {% extends "base.html" %}
 {% block content %}
+
 <div class="card" style="max-width: 450px; margin: 40px auto; border-top: 5px solid var(--primary);">
-    <h2 style="text-align: center;"><i class="fas fa-user-plus"></i> Recruit Explorer</h2>
+    
+    <h2 style="text-align: center;">
+        <i class="fas fa-user-plus"></i> Recruit Explorer
+    </h2>
     
     <form method="POST">
 
-    {% if error %}
-        <p style="color:red;">{{ error }}</p>
-    {% endif %}
+        {% if error %}
+            <p style="color:red;">{{ error }}</p>
+        {% endif %}
 
-    <input type="text" name="username" placeholder="Enter Username" required>
+        <input type="text" name="username" placeholder="Enter Username" required>
 
-    <input type="email" name="email" placeholder="Enter Email" required>
+        <input type="email" name="email" placeholder="Enter Email" required>
 
-    <input type="password" name="password" placeholder="Enter Password" required>
+        <input type="password" name="password" placeholder="Enter Password" required>
 
-    <button type="submit" class="btn">Register</button>
+        <button type="submit" class="btn">Register</button>
 
-</form>
-<p style="color:red;">{{ error }}</p>
-{% endif %}
+    </form>
+
     <p style="text-align: center; font-size: 0.9rem; margin-top: 20px;">
-        Already registered? <a href="/login" style="color: var(--primary); text-decoration: none;">Login to Station</a>
+        Already registered? 
+        <a href="/login" style="color: var(--primary); text-decoration: none;">
+            Login to Station
+        </a>
     </p>
+
 </div>
+
 {% endblock %}
