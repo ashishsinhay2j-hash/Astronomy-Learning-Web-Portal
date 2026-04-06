@@ -87,9 +87,12 @@ def login():
         password = request.form.get("password")
         role = request.form.get("role")
 
-        if not email or not password or not role:
-            return render_template("login.html", error="All fields required")
+        if not email or not password:
+          return render_template("login.html", error="Email and password required")
 
+        if not role:
+          return render_template("login.html", error="Please select a role")
+          
         selected_role = int(role)
 
         db = get_db()
@@ -254,7 +257,6 @@ def add_course():
         db.close()
 
         return redirect("/teacher")
-
     return render_template("add_course.html")
 #----------------- ADD QUESTION ----------------
 @app.route("/add_question", methods=["GET","POST"])
@@ -375,7 +377,10 @@ def course_detail(course_id):
     cursor = db.cursor(dictionary=True)
 
     # get topics
-    cursor.execute("SELECT * FROM topics WHERE course_id=%s", (course_id,))
+    cursor.execute(
+    "SELECT * FROM lessons WHERE topic_id=%s AND pdf_url IS NOT NULL",
+    (t["topic_id"],)
+)
     topics = cursor.fetchall()
 
     # get lessons inside each topic
@@ -385,8 +390,7 @@ def course_detail(course_id):
 
     cursor.close()
     db.close()
-
-    return render_template("course.html", topics=topics)
+    return render_template("course_detail.html", topics=topics)
 #----------------course route ----------------
 @app.route("/courses")
 @login_required
@@ -498,6 +502,23 @@ def leaderboard():
 def logout():
     session.clear()
     return redirect("/")
+#----------------- COMPLETE LESSON ----------------
+@app.route("/complete/<int:lesson_id>")
+@login_required
+def complete(lesson_id):
+    db = get_db()
+    cursor = db.cursor()
+
+    cursor.execute(
+        "INSERT INTO progress (user_id, lesson_id, status) VALUES (%s,%s,'completed')",
+        (session["user_id"], lesson_id)
+    )
+    db.commit()
+
+    cursor.close()
+    db.close()
+
+    return redirect("/dashboard")
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
