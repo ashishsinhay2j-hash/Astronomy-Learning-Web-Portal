@@ -224,23 +224,7 @@ def courses():
 
     return render_template("courses.html", courses=courses)
 #----------------- Courses ----------------
-@app.route("/course/<int:course_id>")
-@login_required
-def course_detail(course_id):
-    db = get_db()
-    cursor = db.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM topics WHERE course_id=%s", (course_id,))
-    topics = cursor.fetchall()
-
-    for t in topics:
-        cursor.execute("SELECT * FROM lessons WHERE topic_id=%s", (t["topic_id"],))
-        t["lessons"] = cursor.fetchall()
-
-    cursor.close()
-    db.close()
-
-    return render_template("course.html", topics=topics)
 #----------------- QUIZ----------------
 @app.route("/quiz/<int:quiz_id>", methods=["GET","POST"])
 @login_required
