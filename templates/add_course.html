@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <h2>Add Course</h2>
+
+    <form method="POST">
+        <input name="title" placeholder="Course Title" required>
+        <textarea name="description" placeholder="Description"></textarea>
+        <button type="submit" class="btn">Add</button>
+    </form>
+</div>
+
+{% endblock %}

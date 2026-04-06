@@ -191,12 +191,153 @@ def admin():
     db.close()
 
     return render_template("admin.html", users=users)
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+#----------------- ADMIN REPORT ----------------
+@app.route("/admin_report")
+@login_required
+@roles_required(1)
+def admin_report():
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
 
+    cursor.execute("SELECT username, email, role_id FROM users")
+    users = cursor.fetchall()
+
+    cursor.close()
+    db.close()
+
+    filename = "admin_report.pdf"
+    doc = SimpleDocTemplate(filename)
+    styles = getSampleStyleSheet()
+
+    elements = []
+
+    elements.append(Paragraph("Admin Report - Users", styles["Title"]))
+    elements.append(Spacer(1, 20))
+
+    for u in users:
+        text = f"Name: {u['username']} | Email: {u['email']} | Role: {u['role_id']}"
+        elements.append(Paragraph(text, styles["Normal"]))
+        elements.append(Spacer(1, 10))
+
+    doc.build(elements)
+
+    from flask import send_file
+
+    return send_file(filename, as_attachment=True)
+#----------------- TEACHER ----------------
 @app.route("/teacher")
 @login_required
 @roles_required(3)
 def teacher():
     return render_template("teacher.html")
+#----------------- ADD COURSE ----------------
+@app.route("/add_course", methods=["GET","POST"])
+@login_required
+@roles_required(3)
+def add_course():
+    if request.method == "POST":
+        title = request.form["title"]
+        description = request.form["description"]
+
+        db = get_db()
+        cursor = db.cursor()
+
+        cursor.execute(
+            "INSERT INTO courses (title, description) VALUES (%s,%s)",
+            (title, description)
+        )
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return redirect("/teacher")
+
+    return render_template("add_course.html")
+#----------------- ADD QUESTION ----------------
+@app.route("/add_question", methods=["GET","POST"])
+@login_required
+@roles_required(3)
+def add_question():
+    if request.method == "POST":
+        question = request.form["question"]
+        quiz_id = request.form["quiz_id"]
+
+        db = get_db()
+        cursor = db.cursor()
+
+        cursor.execute(
+            "INSERT INTO questions (quiz_id, question_text) VALUES (%s,%s)",
+            (quiz_id, question)
+        )
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return "Question Added"
+
+    return render_template("add_question.html")
+#----------------- TEACHER RESULTS ----------------
+@app.route("/teacher_results")
+@login_required
+@roles_required(3)
+def teacher_results():
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT users.username, quiz_attempts.score, quiz_attempts.total
+        FROM quiz_attempts
+        JOIN users ON users.user_id = quiz_attempts.user_id
+    """)
+
+    data = cursor.fetchall()
+
+    cursor.close()
+    db.close()
+
+    return render_template("teacher_results.html", data=data)
+#----------------- TEACHER REPORT ----------------
+@app.route("/teacher_report")
+@login_required
+@roles_required(3)
+def teacher_report():
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT users.username, quiz_attempts.score, quiz_attempts.total
+        FROM quiz_attempts
+        JOIN users ON users.user_id = quiz_attempts.user_id
+    """)
+    data = cursor.fetchall()
+
+    cursor.close()
+    db.close()
+
+    filename = "teacher_report.pdf"
+    doc = SimpleDocTemplate(filename)
+    styles = getSampleStyleSheet()
+
+    elements = []
+
+    elements.append(Paragraph("Student Performance Report", styles["Title"]))
+    elements.append(Spacer(1, 20))
+
+    for d in data:
+        text = f"{d['username']} → Score: {d['score']}/{d['total']}"
+        elements.append(Paragraph(text, styles["Normal"]))
+        elements.append(Spacer(1, 10))
+
+    doc.build(elements)
+
+    from flask import send_file
+
+    return send_file(filename, as_attachment=True)
+#----------------- DASHBOARD ----------------
 
 @app.route("/dashboard")
 @login_required
@@ -211,6 +352,21 @@ def dashboard():
     db.close()
 
     return render_template("dashboard.html", courses=courses)
+#----------------- Delete User----------------
+@app.route("/delete_user/<int:user_id>")
+@login_required
+@roles_required(1)
+def delete_user(user_id):
+    db = get_db()
+    cursor = db.cursor()
+
+    cursor.execute("DELETE FROM users WHERE user_id=%s", (user_id,))
+    db.commit()
+
+    cursor.close()
+    db.close()
+
+    return redirect("/admin")
 #----------------- COURSE ----------------
 @app.route("/course/<int:course_id>")
 @login_required

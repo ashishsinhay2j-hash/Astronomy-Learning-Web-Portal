@@ -33,9 +33,10 @@
                         </span>
                     </td>
                     <td>
-                        <a href="#" style="color: #ff4d4d; text-decoration: none;" title="Delete User">
-                            <i class="fas fa-trash"></i>
-                        </a>
+                        <a href="/delete_user/{{ u.user_id }}">
+    <i class="fas fa-trash"></i>
+</a>
+                           
                     </td>
                 </tr>
                 {% endfor %}
@@ -45,6 +46,11 @@
 
     <div class="card">
         <h3><i class="fas fa-chart-line"></i> Global Stats</h3>
+
+<a href="/admin_report" class="btn" style="margin-top:10px; display:inline-block;">
+    📄 Download Report
+</a>
+        
         <p>Total Registered Explorers: <b>{{ users|length }}</b></p>
         <p>Active Courses: <b>3</b></p>
         <p>Certificates Issued: <b>14</b></p>
