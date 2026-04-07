@@ -376,22 +376,16 @@ def course_detail(course_id):
     db = get_db()
     cursor = db.cursor(dictionary=True)
 
-    # ✅ Step 1: get topics for this course
-    cursor.execute("SELECT * FROM topics WHERE course_id=%s", (course_id,))
-    topics = cursor.fetchall()
-
-    # ✅ Step 2: get lessons inside each topic
-    for t in topics:
-        cursor.execute(
-            "SELECT * FROM lessons WHERE topic_id=%s",
-            (t["topic_id"],)
-        )
-        t["lessons"] = cursor.fetchall()
+    cursor.execute(
+        "SELECT * FROM lessons WHERE course_id=%s",
+        (course_id,)
+    )
+    lessons = cursor.fetchall()
 
     cursor.close()
     db.close()
 
-    return render_template("course_detail.html", topics=topics)
+    return render_template("course_detail.html", lessons=lessons)
 #----------------course route ----------------
 @app.route("/courses")
 @login_required

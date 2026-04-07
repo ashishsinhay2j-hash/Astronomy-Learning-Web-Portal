@@ -24,17 +24,26 @@
                 {{ t.topic_name }}
             </h2>
 
-            {% for l in t.lessons %}
+           {% if t.lessons %}
+    {% for l in t.lessons %}
 
-            <div class="card">
+    <div class="card">
+        <h3>{{ l.title }}</h3>
+        <p>{{ l.content }}</p>
+    </div>
+
+    {% endfor %}
+{% else %}
+    <p style="color:#aaa;">No lessons available for this topic</p>
+{% endif %}
 
                 <!-- TITLE -->
                 <h3>{{ l.title }}</h3>
 
                 <!-- TYPE BADGE -->
                 <span class="badge badge-{{ l.type if l.type else 'default' }}">
-                    {{ l.type if l.type else 'general' }}
-                </span>
+    {{ l.type if l.type else 'general' }}
+</span>
 
                 <!-- DESCRIPTION -->
                 <p style="color: #ccc; margin-top:10px;">
