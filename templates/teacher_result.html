@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Student Results</h2>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Score</th>
+    </tr>
+
+    {% for d in data %}
+    <tr>
+        <td>{{ d.username }}</td>
+        <td>{{ d.score }}/{{ d.total }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

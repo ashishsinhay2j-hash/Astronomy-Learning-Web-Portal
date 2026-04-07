@@ -1,18 +1,17 @@
 {% extends "base.html" %}
+
 {% block content %}
 
 <div style="display: flex; gap: 30px;">
 
     <!-- LEFT SIDEBAR -->
     <div style="flex: 1; max-width: 250px;">
-        <h3 style="color: var(--primary); margin-top: 0;">
-            <i class="fas fa-list"></i> Modules
-        </h3>
+        <h3>Modules</h3>
 
         {% for t in topics %}
-        <div class="card" style="padding: 12px; margin-bottom: 10px; border-left: 4px solid var(--primary); font-size: 0.9rem;">
-            {{ t.topic_name }}
-        </div>
+            <div class="card">
+                {{ t.topic_name }}
+            </div>
         {% endfor %}
     </div>
 
@@ -20,71 +19,63 @@
     <div style="flex: 3;">
 
         {% for t in topics %}
-            <h2 style="color: var(--primary); margin-top: 0;">
-                {{ t.topic_name }}
-            </h2>
+            <h2>{{ t.topic_name }}</h2>
 
-           {% if t.lessons %}
-    {% for l in t.lessons %}
-
-    <div class="card">
-        <h3>{{ l.title }}</h3>
-        <p>{{ l.content }}</p>
-    </div>
-
-    {% endfor %}
-{% else %}
-    <p style="color:#aaa;">No lessons available for this topic</p>
-{% endif %}
-
-                <!-- TITLE -->
-                <h3>{{ l.title }}</h3>
-
-                <!-- TYPE BADGE -->
-                <span class="badge badge-{{ l.type if l.type else 'default' }}">
-    {{ l.type if l.type else 'general' }}
-</span>
-
-                <!-- DESCRIPTION -->
-                <p style="color: #ccc; margin-top:10px;">
-                    {{ l.content if l.content else "Study material available below." }}
-                </p>
-
-                <!-- PDF BUTTONS -->
-                {% if l.pdf_url %}
-                <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
-
-                    <a href="{{ l.pdf_url }}" target="_blank" class="btn">
-                        📄 View
-                    </a>
-
-                    <a href="{{ l.pdf_url }}" target="_blank" class="btn" style="background:#2ecc71;">
-                        ⬇ Download
-                    </a>
-
-                </div>
-                {% endif %}
-
-                <!-- ACTION BUTTONS -->
-                <div style="margin-top: 20px; border-top: 1px solid #333; padding-top: 15px; display: flex; justify-content: space-between;">
-
-                    <a href="/complete/{{ l.lesson_id }}" class="btn">
-                        ✔ Complete
-                    </a>
-
-                    <a href="/quiz/{{ l.lesson_id }}"></a> class="btn" style="background:#e74c3c;">
-    🧠 Quiz
-</a>
-
-                </div>
-
+            <!-- FILTER BUTTONS -->
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <button class="btn" onclick="filterType('all')">All</button>
+                <button class="btn" onclick="filterType('book')">Books</button>
+                <button class="btn" onclick="filterType('notes')">Notes</button>
+                <button class="btn" onclick="filterType('research')">Research</button>
             </div>
 
-            {% endfor %}
+            {% if t.lessons %}
+                {% for l in t.lessons %}
+
+                <!-- ✅ FIXED CARD -->
+                <div class="card lesson" data-type="{{ l.type if l.type else 'default' }}">
+
+                    <h3>{{ l.title }}</h3>
+
+                    <p>
+                        {{ l.content if l.content else "Study material available." }}
+                    </p>
+
+                    {% if l.pdf_url %}
+                        <a href="{{ l.pdf_url }}" target="_blank" class="btn">📄 View PDF</a>
+                    {% endif %}
+
+                    <div style="margin-top:15px; display:flex; justify-content:space-between;">
+                        <a href="/complete/{{ l.lesson_id }}" class="btn">✔ Complete</a>
+                        <a href="/quiz/{{ t.topic_id }}" class="btn" style="background:#e74c3c;">🧠 Quiz</a>
+                    </div>
+
+                </div>
+
+                {% endfor %}
+            {% else %}
+                <p>No lessons available</p>
+            {% endif %}
+
         {% endfor %}
 
     </div>
 
 </div>
+
+<!-- ✅ SCRIPT OUTSIDE LOOP -->
+<script>
+function filterType(type) {
+    let lessons = document.querySelectorAll(".lesson");
+
+    lessons.forEach(l => {
+        if (type === "all" || l.dataset.type === type) {
+            l.style.display = "block";
+        } else {
+            l.style.display = "none";
+        }
+    });
+}
+</script>
 
 {% endblock %}

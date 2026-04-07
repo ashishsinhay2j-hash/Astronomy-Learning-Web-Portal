@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <h2>Add Topic</h2>
+
+    <form method="POST">
+        <input name="topic_name" placeholder="Topic Name" required>
+        <input name="course_id" placeholder="Course ID" required>
+        <button class="btn">Add Topic</button>
+    </form>
+</div>
+
+{% endblock %}

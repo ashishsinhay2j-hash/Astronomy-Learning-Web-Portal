@@ -44,6 +44,13 @@
         .navbar a:hover { 
             color: var(--primary); 
         }
+        .progress-fill {
+    background: #2ecc71;
+    padding: 10px;
+    text-align: center;
+    width: 0%;
+    transition: 1s;
+}
 
         .container { 
             padding: 30px; 
@@ -75,24 +82,18 @@
         }
 
         /* Buttons */
-        .btn { 
-            background: var(--primary); 
-            color: #000; 
-            padding: 10px 20px; 
-            border-radius: 8px; 
-            text-decoration: none; 
-            font-weight: bold; 
-            border: none; 
-            cursor: pointer; 
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
+        .btn {
+    background: linear-gradient(45deg, #00d4ff, #2ecc71);
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: 0.3s;
+}
 
-        .btn:hover { 
-            background: #00aacc; 
-            transform: translateY(-2px); 
-            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
-        }
+.btn:hover {
+    transform: scale(1.05);
+}
 
         /* Professional Form Inputs */
         input, select, textarea { 
@@ -135,6 +136,11 @@
             border-top: 1px solid #222;
         }
     </style>
+    <script>
+document.addEventListener("click", function() {
+    document.body.style.opacity = "0.7";
+});
+</script>
 </head>
 <body>
 

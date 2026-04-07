@@ -1,4 +1,7 @@
-
+from flask import send_file
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import letter
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -194,8 +197,7 @@ def admin():
     db.close()
 
     return render_template("admin.html", users=users)
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
+
 #----------------- ADMIN REPORT ----------------
 @app.route("/admin_report")
 @login_required
@@ -282,6 +284,30 @@ def add_question():
         return "Question Added"
 
     return render_template("add_question.html")
+#----------------- ADD TOPIC ----------------
+@app.route("/add_topic", methods=["GET","POST"])
+@login_required
+@roles_required(1)
+def add_topic():
+    if request.method == "POST":
+        topic_name = request.form["topic_name"]
+        course_id = request.form["course_id"]
+
+        db = get_db()
+        cursor = db.cursor()
+
+        cursor.execute(
+            "INSERT INTO topics (topic_name, course_id) VALUES (%s,%s)",
+            (topic_name, course_id)
+        )
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return redirect("/admin")
+
+    return render_template("add_topic.html")
 #----------------- TEACHER RESULTS ----------------
 @app.route("/teacher_results")
 @login_required
@@ -376,16 +402,19 @@ def course_detail(course_id):
     db = get_db()
     cursor = db.cursor(dictionary=True)
 
-    cursor.execute(
-        "SELECT * FROM lessons WHERE course_id=%s",
-        (course_id,)
-    )
-    lessons = cursor.fetchall()
+    # get topics
+    cursor.execute("SELECT * FROM topics WHERE course_id=%s", (course_id,))
+    topics = cursor.fetchall()
+
+    # get lessons inside topics
+    for t in topics:
+        cursor.execute("SELECT * FROM lessons WHERE topic_id=%s", (t["topic_id"],))
+        t["lessons"] = cursor.fetchall()
 
     cursor.close()
     db.close()
 
-    return render_template("course_detail.html", lessons=lessons)
+    return render_template("course_detail.html", topics=topics)
 #----------------course route ----------------
 @app.route("/courses")
 @login_required
@@ -469,8 +498,62 @@ def quiz(quiz_id):
 @app.route("/certificate")
 @login_required
 def certificate():
-    filename = f"Cert_{session['user_id']}_{uuid.uuid4().hex[:6]}.pdf"
-    return f"Certificate generated: {filename}"
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+
+    # get user name
+    cursor.execute("SELECT username FROM users WHERE user_id=%s", (session["user_id"],))
+    user = cursor.fetchone()
+
+    # total lessons
+    cursor.execute("SELECT COUNT(*) as total FROM lessons")
+    total = cursor.fetchone()["total"]
+
+    # completed lessons
+    cursor.execute(
+        "SELECT COUNT(*) as completed FROM progress WHERE user_id=%s",
+        (session["user_id"],)
+    )
+    completed = cursor.fetchone()["completed"]
+
+    cursor.close()
+    db.close()
+
+    # 🔒 LOCK CHECK
+    if completed < total or total == 0:
+        return render_template("certificate.html", unlocked=False, completed=completed, total=total)
+
+    # ✅ GENERATE PDF
+    filename = f"certificate_{session['user_id']}_{uuid.uuid4().hex[:5]}.pdf"
+
+    doc = SimpleDocTemplate(filename, pagesize=letter)
+    styles = getSampleStyleSheet()
+
+    elements = []
+
+    elements.append(Paragraph("🎓 Certificate of Completion", styles["Title"]))
+    elements.append(Spacer(1, 30))
+
+    elements.append(Paragraph(f"This certifies that", styles["Normal"]))
+    elements.append(Spacer(1, 10))
+
+    elements.append(Paragraph(f"<b>{user['username']}</b>", styles["Title"]))
+    elements.append(Spacer(1, 20))
+
+    elements.append(Paragraph("has successfully completed the course", styles["Normal"]))
+    elements.append(Spacer(1, 10))
+
+    elements.append(Paragraph("<b>Astronomy Learning Program</b>", styles["Heading2"]))
+    elements.append(Spacer(1, 30))
+
+    import datetime
+    date = datetime.datetime.now().strftime("%d %B %Y")
+
+    elements.append(Paragraph(f"Date: {date}", styles["Normal"]))
+
+    doc.build(elements)
+
+    return send_file(filename, as_attachment=True)
 #---------------- Leaderboard ----------------
 @app.route("/leaderboard")
 @login_required
@@ -497,7 +580,32 @@ def leaderboard():
 def logout():
     session.clear()
     return redirect("/")
-#----------------- COMPLETE LESSON ----------------
+#----------------- PROGRESS ----------------
+@app.route("/progress")
+@login_required
+def progress():
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+
+    cursor.execute(
+        "SELECT COUNT(*) as completed FROM progress WHERE user_id=%s",
+        (session["user_id"],)
+    )
+    result = cursor.fetchone()
+
+    completed = result["completed"]  # ✅ FIX HERE
+
+    cursor.close()
+    db.close()
+
+    cursor.execute("SELECT COUNT(*) as total FROM lessons")
+    total_lessons = cursor.fetchone()["total"]
+
+    percentage = int((completed / total_lessons) * 100) if total_lessons > 0 else 0
+
+    return render_template("progress.html", completed=completed, percentage=percentage)
+
+ #----------------- COMPLETE LESSON ----------------
 @app.route("/complete/<int:lesson_id>")
 @login_required
 def complete(lesson_id):

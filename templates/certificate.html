@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card" style="text-align:center;">
+
+    <h2>🎓 Certificate</h2>
+
+
+        {% if unlocked %}
+    <a href="/certificate" class="btn">Download Certificate</a>
+{% endif %}
+
+    {% else %}
+        <p style="color:#e74c3c;">
+            🔒 Certificate Locked
+        </p>
+
+        <p>
+            Complete all lessons to unlock it
+        </p>
+
+        <p>
+            Progress: {{ completed }} / {{ total }}
+        </p>
+    {% endif %}
+
+</div>
+
+{% endblock %}
