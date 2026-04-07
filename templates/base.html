@@ -158,7 +158,11 @@ document.addEventListener("click", function() {
             <a href="/teacher">Teacher</a>
         {% endif %}
 
-        <a href="/delete_account">Delete</a>
+       {% if session.get("role") == 2 %}
+    <a href="/delete_account" onclick="return confirm('Are you sure?')">
+    Delete Account
+</a>
+{% endif %}
         <a href="/logout">Logout</a>
 
     {% else %}

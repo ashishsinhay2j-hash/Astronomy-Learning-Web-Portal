@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <h2>Add Question</h2>
+
+    <form method="POST">
+
+        <input name="question" placeholder="Enter question" required>
+
+        <input name="quiz_id" placeholder="Quiz ID (example: 1)" required>
+
+        <button class="btn">Add Question</button>
+
+    </form>
+</div>
+
+{% endblock %}

@@ -281,7 +281,7 @@ def add_question():
         cursor.close()
         db.close()
 
-        return "Question Added"
+        return redirect("/teacher")
 
     return render_template("add_question.html")
 #----------------- ADD TOPIC ----------------
