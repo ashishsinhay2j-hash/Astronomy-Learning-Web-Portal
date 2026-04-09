@@ -2,41 +2,6 @@
 
 {% block content %}
 
-<div style="display: flex; gap: 30px;">
-
-    <!-- LEFT SIDEBAR -->
-    <div style="flex: 1; max-width: 250px;">
-        <h3>Modules</h3>
-
-        {% for t in topics %}
-            <div class="card">
-                {{ t.topic_name }}
-            </div>
-        {% endfor %}
-    </div>
-
-    <!-- RIGHT CONTENT -->
-    <div style="flex: 3;">
-
-        {% for t in topics %}
-            <h2>{{ t.topic_name }}</h2>
-
-            <!-- FILTER BUTTONS -->
-            <div style="display:flex; gap:10px; margin-bottom:20px;">
-                <button class="btn" onclick="filterType('all')">All</button>
-                <button class="btn" onclick="filterType('book')">Books</button>
-                <button class="btn" onclick="filterType('notes')">Notes</button>
-                <button class="btn" onclick="filterType('research')">Research</button>
-            </div>
-
-            {% if t.lessons %}
-                {% for l in t.lessons %}
-
-                <!-- ✅ FIXED CARD -->
-                {% extends "base.html" %}
-
-{% block content %}
-
 <h2>{{ course.title }}</h2>
 <p>{{ course.description }}</p>
 
@@ -49,47 +14,15 @@
     {% if l.video_url %}
         <iframe width="100%" height="300"
             src="{{ l.video_url }}"
-            frameborder="0" allowfullscreen>
+            frameborder="0"
+            allowfullscreen>
         </iframe>
     {% else %}
-        <p>No video available</p>
+        <p>No video</p>
     {% endif %}
-
-    <br>
-
-    <a href="/complete/{{ l.lesson_id }}" class="btn">✔ Complete</a>
 
 </div>
 
 {% endfor %}
-
-{% endblock %}
-
-                
-                {% endfor %}
-            {% else %}
-                <p>No lessons available</p>
-            {% endif %}
-
-        {% endfor %}
-
-    </div>
-
-</div>
-
-<!-- ✅ SCRIPT OUTSIDE LOOP -->
-<script>
-function filterType(type) {
-    let lessons = document.querySelectorAll(".lesson");
-
-    lessons.forEach(l => {
-        if (type === "all" || l.dataset.type === type) {
-            l.style.display = "block";
-        } else {
-            l.style.display = "none";
-        }
-    });
-}
-</script>
 
 {% endblock %}

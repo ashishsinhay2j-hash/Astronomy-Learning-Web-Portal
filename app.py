@@ -402,11 +402,11 @@ def course_detail(course_id):
     db = get_db()
     cursor = db.cursor(dictionary=True)
 
-    # ✅ STEP 1: Get course info (ADD HERE)
+    # course info
     cursor.execute("SELECT * FROM courses WHERE course_id=%s", (course_id,))
     course = cursor.fetchone()
 
-    # ✅ STEP 2: Get lessons
+    # all videos (lessons)
     cursor.execute("""
         SELECT * FROM lessons 
         WHERE course_id=%s 
@@ -417,7 +417,6 @@ def course_detail(course_id):
     cursor.close()
     db.close()
 
-    # ✅ STEP 3: Send to HTML
     return render_template("course_detail.html", course=course, lessons=lessons)
 #----------------course route ----------------
 @app.route("/courses")
