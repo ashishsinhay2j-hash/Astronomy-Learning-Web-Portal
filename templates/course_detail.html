@@ -39,41 +39,25 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    let lessons = document.querySelectorAll(".lesson-item");
-    let player = document.getElementById("player");
-    let currentIndex = 0;
-    let autoTimer;
+    const lessonItems = document.querySelectorAll(".lesson-item");
+    const player = document.getElementById("player");
 
-    function loadVideoByIndex(index) {
-        currentIndex = index;
-
-        let url = lessons[index].getAttribute("data-url");
-
+    // function to load video
+    function loadVideo(url) {
         player.innerHTML = `
-            <iframe id="videoFrame" width="100%" height="400"
+            <iframe width="100%" height="400"
                 src="${url}?autoplay=1"
                 frameborder="0"
                 allowfullscreen>
             </iframe>
         `;
-
-        startAutoNext();
     }
 
-    function startAutoNext() {
-        clearTimeout(autoTimer);
-
-        autoTimer = setTimeout(() => {
-            if (currentIndex < lessons.length - 1) {
-                loadVideoByIndex(currentIndex + 1);
-            }
-        }, 300000); // 5 minutes
-    }
-
-    // ✅ FIXED CLICK HANDLER
-    lessons.forEach((item, index) => {
+    // attach click to each lesson
+    lessonItems.forEach(item => {
         item.addEventListener("click", function () {
-            loadVideoByIndex(index);
+            const url = this.getAttribute("data-url");
+            loadVideo(url);
         });
     });
 
