@@ -1,17 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>All Courses</h2>
 
-<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap:20px;">
+<h2>🚀 Explore Courses</h2>
+
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap:25px; margin-top:20px;">
 
 {% for c in courses %}
-<div class="card">
+<div class="card" style="text-align:center;">
 
     <h3>{{ c.title }}</h3>
     <p>{{ c.description }}</p>
 
-    <a href="/course/{{ c.course_id }}" class="btn">View</a>
+    <br>
+
+    <a href="/course/{{ c.course_id }}" class="btn">
+        ▶ Start Learning
+    </a>
 
 </div>
 {% endfor %}
