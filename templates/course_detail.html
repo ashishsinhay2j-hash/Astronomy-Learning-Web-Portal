@@ -33,23 +33,39 @@
                 {% for l in t.lessons %}
 
                 <!-- ✅ FIXED CARD -->
-                <div class="card lesson" data-type="{{ l.type if l.type else 'default' }}">
+                {% extends "base.html" %}
 
-                    <h3>{{ l.title }}</h3>
+{% block content %}
 
-                    <p>
-                        {{ l.content if l.content else "Study material available." }}
-                    </p>
+<h2>{{ course.title }}</h2>
+<p>{{ course.description }}</p>
 
-                    
+{% for l in lessons %}
 
-                    <div style="margin-top:15px; display:flex; justify-content:space-between;">
-                        <a href="/complete/{{ l.lesson_id }}" class="btn">✔ Complete</a>
-                        <a href="/quiz/{{ t.topic_id }}" class="btn" style="background:#e74c3c;">🧠 Quiz</a>
-                    </div>
+<div class="card">
 
-                </div>
+    <h3>{{ l.title }}</h3>
 
+    {% if l.video_url %}
+        <iframe width="100%" height="300"
+            src="{{ l.video_url }}"
+            frameborder="0" allowfullscreen>
+        </iframe>
+    {% else %}
+        <p>No video available</p>
+    {% endif %}
+
+    <br>
+
+    <a href="/complete/{{ l.lesson_id }}" class="btn">✔ Complete</a>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}
+
+                
                 {% endfor %}
             {% else %}
                 <p>No lessons available</p>
