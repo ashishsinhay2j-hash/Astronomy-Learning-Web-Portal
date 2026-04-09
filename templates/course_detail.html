@@ -15,9 +15,10 @@
 <!-- 📜 LESSON LIST -->
 <h3>Lessons</h3>
 
+
 {% for l in lessons %}
-<div class="card" style="cursor:pointer; margin-bottom:10px;"
-     onclick="playVideo('{{ l.video_url }}')">
+<div class="card lesson-item" data-url="{{ l.video_url }}" 
+     style="cursor:pointer; margin-bottom:10px;">
 
     <img 
         src="https://img.youtube.com/vi/{{ l.video_url.split('/')[-1] }}/0.jpg"
@@ -29,17 +30,33 @@
 </div>
 {% endfor %}
 
+
 <!-- ✅ SIMPLE SCRIPT -->
 <script>
-function playVideo(url) {
-    document.getElementById("player").innerHTML = `
-        <iframe width="100%" height="400"
-            src="${url}?autoplay=1"
-            frameborder="0"
-            allowfullscreen>
-        </iframe>
-    `;
-}
+window.onload = function () {
+
+    var items = document.getElementsByClassName("lesson-item");
+    var player = document.getElementById("player");
+
+    for (let i = 0; i < items.length; i++) {
+
+        items[i].onclick = function () {
+
+            var url = this.getAttribute("data-url");
+
+            console.log("Playing:", url);  // DEBUG
+
+            player.innerHTML = `
+                <iframe width="100%" height="400"
+                    src="${url}?autoplay=1"
+                    frameborder="0"
+                    allowfullscreen>
+                </iframe>
+            `;
+        };
+    }
+
+};
 </script>
 
 {% endblock %}
