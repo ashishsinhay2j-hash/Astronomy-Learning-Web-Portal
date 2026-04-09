@@ -16,7 +16,8 @@
 <h3>Lessons</h3>
 
 {% for l in lessons %}
-<div class="card lesson-item" data-url="{{ l.video_url }}" style="cursor:pointer; margin-bottom:10px;">
+<div class="card" style="cursor:pointer; margin-bottom:10px;"
+     onclick="playVideo('{{ l.video_url }}')">
 
     <img 
         src="https://img.youtube.com/vi/{{ l.video_url.split('/')[-1] }}/0.jpg"
@@ -28,32 +29,17 @@
 </div>
 {% endfor %}
 
-<!-- ✅ FINAL SCRIPT -->
+<!-- ✅ SIMPLE SCRIPT -->
 <script>
-window.onload = function () {
-
-    const lessons = document.querySelectorAll(".lesson-item");
-    const player = document.getElementById("player");
-
-    lessons.forEach(function(item) {
-
-        item.addEventListener("click", function() {
-
-            let url = item.getAttribute("data-url");
-
-            player.innerHTML = `
-                <iframe width="100%" height="400"
-                    src="${url}?autoplay=1"
-                    frameborder="0"
-                    allowfullscreen>
-                </iframe>
-            `;
-
-        });
-
-    });
-
-};
+function playVideo(url) {
+    document.getElementById("player").innerHTML = `
+        <iframe width="100%" height="400"
+            src="${url}?autoplay=1"
+            frameborder="0"
+            allowfullscreen>
+        </iframe>
+    `;
+}
 </script>
 
 {% endblock %}
