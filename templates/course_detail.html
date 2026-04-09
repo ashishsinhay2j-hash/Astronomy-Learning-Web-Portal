@@ -37,53 +37,46 @@
 </div>
 {% endfor %}
 <script>
-let lessons = document.querySelectorAll(".lesson-item");
-let currentIndex = 0;
+document.addEventListener("DOMContentLoaded", function () {
 
-function loadVideoByIndex(index) {
-    currentIndex = index;
-    let url = lessons[index].dataset.url;
+    let lessons = document.querySelectorAll(".lesson-item");
+    let player = document.getElementById("player");
+    let currentIndex = 0;
+    let autoTimer;
 
-    document.getElementById("player").innerHTML = `
-        <iframe id="videoFrame" width="100%" height="400"
-            src="${url}?autoplay=1"
-            frameborder="0"
-            allowfullscreen>
-        </iframe>
-    `;
-}
+    function loadVideoByIndex(index) {
+        currentIndex = index;
 
-// click event for all lessons
-lessons.forEach((item, index) => {
-    item.addEventListener("click", () => {
-        loadVideoByIndex(index);
+        let url = lessons[index].getAttribute("data-url");
+
+        player.innerHTML = `
+            <iframe id="videoFrame" width="100%" height="400"
+                src="${url}?autoplay=1"
+                frameborder="0"
+                allowfullscreen>
+            </iframe>
+        `;
+
+        startAutoNext();
+    }
+
+    function startAutoNext() {
+        clearTimeout(autoTimer);
+
+        autoTimer = setTimeout(() => {
+            if (currentIndex < lessons.length - 1) {
+                loadVideoByIndex(currentIndex + 1);
+            }
+        }, 300000); // 5 minutes
+    }
+
+    // ✅ FIXED CLICK HANDLER
+    lessons.forEach((item, index) => {
+        item.addEventListener("click", function () {
+            loadVideoByIndex(index);
+        });
     });
-});
-</script>
-<!-- ⚙️ SCRIPT -->
-<script>
-function loadVideo(url) {
-    document.getElementById("player").innerHTML = `
-        <iframe width="100%" height="400"
-            src="${url}?autoplay=1"
-            frameborder="0"
-            allowfullscreen>
-        </iframe>
-    `;
-}
-</script>
-<script>
-function autoNext() {
-    setTimeout(() => {
-        if (currentIndex < lessons.length - 1) {
-            loadVideoByIndex(currentIndex + 1);
-        }
-    }, 300000); // 5 minutes (adjust if needed)
-}
 
-// trigger auto next after load
-document.addEventListener("click", () => {
-    autoNext();
 });
 </script>
 {% endblock %}
