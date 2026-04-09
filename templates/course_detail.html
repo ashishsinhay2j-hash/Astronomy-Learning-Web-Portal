@@ -25,7 +25,7 @@
 <h3>Lessons</h3>
 
 {% for l in lessons %}
-<div class="card" onclick="loadVideo('{{ l.video_url }}')" style="cursor:pointer;">
+<div class="card lesson-item" data-url="{{ l.video_url }}" style="cursor:pointer;">
 
     <img 
         src="https://img.youtube.com/vi/{{ l.video_url.split('/')[-1] }}/0.jpg"
@@ -36,7 +36,30 @@
 
 </div>
 {% endfor %}
+<script>
+let lessons = document.querySelectorAll(".lesson-item");
+let currentIndex = 0;
 
+function loadVideoByIndex(index) {
+    currentIndex = index;
+    let url = lessons[index].dataset.url;
+
+    document.getElementById("player").innerHTML = `
+        <iframe id="videoFrame" width="100%" height="400"
+            src="${url}?autoplay=1"
+            frameborder="0"
+            allowfullscreen>
+        </iframe>
+    `;
+}
+
+// click event for all lessons
+lessons.forEach((item, index) => {
+    item.addEventListener("click", () => {
+        loadVideoByIndex(index);
+    });
+});
+</script>
 <!-- ⚙️ SCRIPT -->
 <script>
 function loadVideo(url) {
@@ -49,5 +72,18 @@ function loadVideo(url) {
     `;
 }
 </script>
+<script>
+function autoNext() {
+    setTimeout(() => {
+        if (currentIndex < lessons.length - 1) {
+            loadVideoByIndex(currentIndex + 1);
+        }
+    }, 300000); // 5 minutes (adjust if needed)
+}
 
+// trigger auto next after load
+document.addEventListener("click", () => {
+    autoNext();
+});
+</script>
 {% endblock %}

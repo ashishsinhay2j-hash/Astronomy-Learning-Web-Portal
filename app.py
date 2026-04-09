@@ -106,7 +106,7 @@ def login():
 
         if user:
             # support both hashed + plain password
-            if user["password"] == password:
+             if check_password_hash(user["password"], password):
 
                 if user["role_id"] == selected_role:
                     session["user"] = user["username"]
