@@ -498,21 +498,15 @@ def quiz(quiz_id):
 
 
 # ---------------- CERTIFICATE ----------------
-@app.route("/certificate")
+@app.route("/certificate_page")
 @login_required
-def certificate():
+def certificate_page():
     db = get_db()
     cursor = db.cursor(dictionary=True)
 
-    # get user name
-    cursor.execute("SELECT username FROM users WHERE user_id=%s", (session["user_id"],))
-    user = cursor.fetchone()
-
-    # total lessons
     cursor.execute("SELECT COUNT(*) as total FROM lessons")
     total = cursor.fetchone()["total"]
 
-    # completed lessons
     cursor.execute(
         "SELECT COUNT(*) as completed FROM progress WHERE user_id=%s",
         (session["user_id"],)
@@ -522,41 +516,13 @@ def certificate():
     cursor.close()
     db.close()
 
-    # 🔒 LOCK CHECK
-    if completed < total or total == 0:
-        return render_template("certificate.html", unlocked=False, completed=completed, total=total)
+    unlocked = completed == total and total > 0
 
-    # ✅ GENERATE PDF
-    filename = f"certificate_{session['user_id']}_{uuid.uuid4().hex[:5]}.pdf"
+    return render_template("certificate.html", unlocked=unlocked, completed=completed, total=total)
+    # get user name
+ 
 
-    doc = SimpleDocTemplate(filename, pagesize=letter)
-    styles = getSampleStyleSheet()
-
-    elements = []
-
-    elements.append(Paragraph("🎓 Certificate of Completion", styles["Title"]))
-    elements.append(Spacer(1, 30))
-
-    elements.append(Paragraph(f"This certifies that", styles["Normal"]))
-    elements.append(Spacer(1, 10))
-
-    elements.append(Paragraph(f"<b>{user['username']}</b>", styles["Title"]))
-    elements.append(Spacer(1, 20))
-
-    elements.append(Paragraph("has successfully completed the course", styles["Normal"]))
-    elements.append(Spacer(1, 10))
-
-    elements.append(Paragraph("<b>Astronomy Learning Program</b>", styles["Heading2"]))
-    elements.append(Spacer(1, 30))
-
-    import datetime
-    date = datetime.datetime.now().strftime("%d %B %Y")
-
-    elements.append(Paragraph(f"Date: {date}", styles["Normal"]))
-
-    doc.build(elements)
-
-    return send_file(filename, as_attachment=True)
+    
 #---------------- Leaderboard ----------------
 @app.route("/leaderboard")
 @login_required

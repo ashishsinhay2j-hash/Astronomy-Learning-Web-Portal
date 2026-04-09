@@ -5,19 +5,10 @@
 <h2>{{ course.title }}</h2>
 <p>{{ course.description }}</p>
 
-<!-- 🎬 MAIN PLAYER -->
-{% if lessons and lessons[0].video_url %}
-<div id="player" style="cursor:pointer;" <div id="player"></div>>
-
-    <img 
-        src="https://img.youtube.com/vi/{{ lessons[0].video_url.split('/')[-1] }}/0.jpg"
-        width="100%" height="400"
-    >
-
-    <p style="text-align:center;">▶ Click to Play</p>
-
+<!-- 🎬 PLAYER -->
+<div id="player">
+    <p style="text-align:center;">Click a lesson to play ▶️</p>
 </div>
-{% endif %}
 
 <br>
 
@@ -25,7 +16,7 @@
 <h3>Lessons</h3>
 
 {% for l in lessons %}
-<div class="card lesson-item" data-url="{{ l.video_url }}" style="cursor:pointer;">
+<div class="card lesson-item" data-url="{{ l.video_url }}" style="cursor:pointer; margin-bottom:10px;">
 
     <img 
         src="https://img.youtube.com/vi/{{ l.video_url.split('/')[-1] }}/0.jpg"
@@ -36,31 +27,33 @@
 
 </div>
 {% endfor %}
-<script>
-document.addEventListener("DOMContentLoaded", function () {
 
-    const lessonItems = document.querySelectorAll(".lesson-item");
+<!-- ✅ FINAL SCRIPT -->
+<script>
+window.onload = function () {
+
+    const lessons = document.querySelectorAll(".lesson-item");
     const player = document.getElementById("player");
 
-    // function to load video
-    function loadVideo(url) {
-        player.innerHTML = `
-            <iframe width="100%" height="400"
-                src="${url}?autoplay=1"
-                frameborder="0"
-                allowfullscreen>
-            </iframe>
-        `;
-    }
+    lessons.forEach(function(item) {
 
-    // attach click to each lesson
-    lessonItems.forEach(item => {
-        item.addEventListener("click", function () {
-            const url = this.getAttribute("data-url");
-            loadVideo(url);
+        item.addEventListener("click", function() {
+
+            let url = item.getAttribute("data-url");
+
+            player.innerHTML = `
+                <iframe width="100%" height="400"
+                    src="${url}?autoplay=1"
+                    frameborder="0"
+                    allowfullscreen>
+                </iframe>
+            `;
+
         });
+
     });
 
-});
+};
 </script>
+
 {% endblock %}

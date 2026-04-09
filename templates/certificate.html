@@ -5,12 +5,12 @@
 
     <h2>🎓 Certificate</h2>
 
+    {% if unlocked %}
 
-        {% if unlocked %}
-    <a href="/certificate" class="btn">Download Certificate</a>
-{% endif %}
+        <a href="/certificate" class="btn">Download Certificate</a>
 
     {% else %}
+
         <p style="color:#e74c3c;">
             🔒 Certificate Locked
         </p>
@@ -22,6 +22,7 @@
         <p>
             Progress: {{ completed }} / {{ total }}
         </p>
+
     {% endif %}
 
 </div>
