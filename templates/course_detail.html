@@ -41,9 +41,7 @@
                         {{ l.content if l.content else "Study material available." }}
                     </p>
 
-                    {% if l.pdf_url %}
-                        <a href="{{ l.pdf_url }}" target="_blank" class="btn">📄 View PDF</a>
-                    {% endif %}
+                    
 
                     <div style="margin-top:15px; display:flex; justify-content:space-between;">
                         <a href="/complete/{{ l.lesson_id }}" class="btn">✔ Complete</a>

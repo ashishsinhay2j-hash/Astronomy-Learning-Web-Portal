@@ -5,46 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Astronomy Learning Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* CSS Variables for consistent branding */
-        :root { 
-            --primary: #00d4ff; 
-            --bg: #0b0c2a; 
-            --card: #1c1f5a; 
-            --nav: #11144c; 
-            --text: #ffffff;
-        }
+   <style>
+:root { 
+    --primary: #00d4ff; 
+    --bg: #0b0c2a; 
+    --card: #1c1f5a; 
+    --nav: #11144c; 
+    --text: #ffffff;
+}
 
-        body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            margin: 0; 
-            background: var(--bg); 
-            color: var(--text); 
-            line-height: 1.6;
-        }
+body { 
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+    margin: 0; 
+    background: var(--bg); 
+    color: var(--text); 
+}
 
-        /* Navigation Bar */
-        .navbar { 
-            background: var(--nav); 
-            padding: 15px; 
-            display: flex; 
-            justify-content: center; 
-            gap: 25px; 
-            border-bottom: 2px solid var(--primary);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
+/* NAVBAR */
+.navbar { 
+    background: var(--nav); 
+    padding: 15px; 
+    display: flex; 
+    justify-content: center; 
+    gap: 25px; 
+    border-bottom: 2px solid var(--primary);
+}
 
-        .navbar a { 
-            color: var(--text); 
-            text-decoration: none; 
-            font-weight: bold; 
-            transition: color 0.3s ease; 
-        }
+.navbar a { 
+    color: var(--text); 
+    text-decoration: none; 
+    font-weight: bold; 
+}
 
-        .navbar a:hover { 
-            color: var(--primary); 
-        }
-        .progress-fill {
+.navbar a:hover { 
+    color: var(--primary); 
+}
+
+/* CONTAINER */
+.container { 
+    padding: 30px; 
+    max-width: 1200px; 
+    margin: auto; 
+}
+
+/* CARD */
+.card { 
+    background: var(--card); 
+    padding: 20px; 
+    border-radius: 12px; 
+    margin-bottom: 20px; 
+}
+
+/* BUTTON */
+.btn {
+    background: linear-gradient(45deg, #00d4ff, #2ecc71);
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* PROGRESS */
+.progress-fill {
     background: #2ecc71;
     padding: 10px;
     text-align: center;
@@ -52,95 +76,23 @@
     transition: 1s;
 }
 
-        .container { 
-            padding: 30px; 
-            max-width: 1200px; 
-            margin: auto; 
-            min-height: 80vh; /* Keeps footer at bottom on short pages */
-        }
-
-        /* Flash Messages Alert System */
-        .alert { 
-            padding: 15px; 
-            margin-bottom: 20px; 
-            border-radius: 8px; 
-            text-align: center; 
-            font-weight: bold; 
-        }
-        .alert-error { background: #ff4d4d; color: white; }
-        .alert-success { background: #2ecc71; color: white; }
-        .alert-info { background: var(--primary); color: #000; }
-
-        /* Card System for Content Blocks */
-        .card { 
-            background: var(--card); 
-            padding: 25px; 
-            border-radius: 15px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5); 
-            margin-bottom: 20px; 
-            transition: transform 0.2s ease;
-        }
-
-        /* Buttons */
-        .btn {
-    background: linear-gradient(45deg, #00d4ff, #2ecc71);
-    color: #000;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-weight: bold;
-    transition: 0.3s;
+/* INPUT */
+input, select { 
+    width: 100%; 
+    padding: 10px; 
+    margin: 10px 0; 
+    border-radius: 5px; 
+    border: 1px solid #444; 
+    background: #0b0c2a; 
+    color: white; 
 }
 
-.btn:hover {
-    transform: scale(1.05);
+footer { 
+    text-align: center; 
+    padding: 20px; 
+    background: var(--nav); 
 }
-
-        /* Professional Form Inputs */
-        input, select, textarea { 
-            width: 100%; 
-            padding: 12px; 
-            margin: 10px 0; 
-            border-radius: 5px; 
-            border: 1px solid #444; 
-            background: #0b0c2a; 
-            color: white; 
-            box-sizing: border-box; 
-        }
-
-        input:focus, select:focus {
-            outline: 2px solid var(--primary);
-            border-color: transparent;
-        }
-        .badge {
-    padding: 5px 10px;
-    border-radius: 5px;
-    color: white;
-    font-size: 0.8rem;
-    display: inline-block;
-    margin-top: 5px;
-}
-
-.badge-book { background: #3498db; }
-.badge-notes { background: #2ecc71; }
-.badge-research { background: #9b59b6; }
-.badge-encyclopedia { background: #e67e22; }
-.badge-guide { background: #1abc9c; }
-.badge-default { background: #777; }
-
-        footer { 
-            text-align: center; 
-            padding: 25px; 
-            background: var(--nav); 
-            margin-top: 50px;
-            font-size: 0.9rem;
-            border-top: 1px solid #222;
-        }
-    </style>
-    <script>
-document.addEventListener("click", function() {
-    document.body.style.opacity = "0.7";
-});
-</script>
+</style>
 </head>
 <body>
 

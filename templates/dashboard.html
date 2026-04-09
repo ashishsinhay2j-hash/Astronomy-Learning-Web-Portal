@@ -3,10 +3,8 @@
 
 <h2>Welcome back, {{ session.get("user") }} 👨‍🚀</h2>
 
-<h3 style="margin-top:30px;">Your Courses</h3>
-
-<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap:20px;">
-<div style="display:flex; gap:20px; margin-bottom:30px; flex-wrap:wrap;">
+<!-- 🔹 STATS SECTION -->
+<div style="display:flex; gap:20px; margin-top:20px; flex-wrap:wrap;">
 
     <div class="card" style="flex:1; min-width:200px; text-align:center;">
         <h3>📚 Courses</h3>
@@ -24,29 +22,42 @@
     </div>
 
 </div>
-{% for c in courses %}
-<div class="card">
-    <h3>{{ c.title }}</h3>
-    <p>{{ c.description }}</p>
-    
 
-    <a href="/course/{{ c.course_id }}" class="btn">View Course</a>
-    <h3 style="margin-top:30px;">Quick Actions</h3>
+<!-- 🔹 COURSES -->
+<h3 style="margin-top:40px;">Your Courses</h3>
 
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap:20px;">
 
-    
+    {% for c in courses %}
+    <div class="card">
+
+        <h3>{{ c.title }}</h3>
+        <p>{{ c.description }}</p>
+
+        <a href="/course/{{ c.course_id }}" class="btn">
+            ▶ Start Learning
+        </a>
+
+    </div>
+    {% endfor %}
+
 </div>
-{% endfor %}
-<div style="display:flex; gap:15px; flex-wrap:wrap;"></div>
+
+<!-- 🔹 QUICK ACTIONS -->
+<h3 style="margin-top:40px;">Quick Actions</h3>
+
+<div style="display:flex; gap:15px; flex-wrap:wrap;">
 
     <a href="/leaderboard" class="btn">🏆 Leaderboard</a>
 
-    <a href="/progress" class="btn" style="background:#9b59b6;">📊 Progress</a>
+    <a href="/progress" class="btn" style="background:#9b59b6;">
+        📊 Progress
+    </a>
 
-   
-    <a href="/certificate" class="btn">🎓 Certificate</a>
+    <a href="/certificate" class="btn">
+        🎓 Certificate
+    </a>
 
-</div>
 </div>
 
 {% endblock %}
