@@ -7,7 +7,7 @@
 
 <!-- 🎬 MAIN PLAYER -->
 {% if lessons and lessons[0].video_url %}
-<div id="player" style="cursor:pointer;" onclick="loadVideo('{{ lessons[0].video_url }}')">
+<div id="player" style="cursor:pointer;" <div id="player"></div>>
 
     <img 
         src="https://img.youtube.com/vi/{{ lessons[0].video_url.split('/')[-1] }}/0.jpg"
