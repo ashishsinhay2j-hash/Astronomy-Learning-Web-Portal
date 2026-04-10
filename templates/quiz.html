@@ -17,14 +17,14 @@
             <div style="margin-top: 15px; display: grid; gap: 10px;">
                 {% for opt in q.options %}
                 <label class="option-box">
-    <div class="option-inner">
-        <input type="radio" name="q{{ q.question_id }}" value="{{ opt.option_id }}">
+              <div class="option-inner">
+        <input type="radio" name="q{{ q.question_id }}" value="{{ opt.option_id }}" required>
         <span class="option-text">{{ opt.option_text }}</span>
     </div>
 </label>
-               {% endfor %}
+            
             </div>
-        </div>
+        
         {% endfor %}
 
         {% if questions|length > 0 %}
