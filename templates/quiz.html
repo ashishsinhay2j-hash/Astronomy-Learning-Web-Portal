@@ -17,10 +17,12 @@
             <div style="margin-top: 15px; display: grid; gap: 10px;">
                 {% for opt in q.options %}
                 <label class="option-box">
-    <input type="radio" name="q{{ q.question_id }}" value="{{ opt.option_id }}">
-    <span>{{ opt.option_text }}</span>
+    <div class="option-inner">
+        <input type="radio" name="q{{ q.question_id }}" value="{{ opt.option_id }}">
+        <span class="option-text">{{ opt.option_text }}</span>
+    </div>
 </label>
-                {% endfor %}
+               {% endfor %}
             </div>
         </div>
         {% endfor %}

@@ -67,9 +67,7 @@ body {
     display: inline-block;
 }
 .option-box {
-    display: flex;
-    align-items: center;
-    gap: 12px; /* space between radio and text */
+    display: block;
     padding: 12px;
     background: #0b0c2a;
     border: 1px solid #333;
@@ -77,14 +75,22 @@ body {
     cursor: pointer;
 }
 
+.option-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-.option-box:hover {
-    border-color: var(--primary);
+.option-text {
+    text-align: left;
+    flex: 1;
 }
 
 .option-box input {
+    margin: 0;
     transform: scale(1.2);
 }
+
 /* PROGRESS */
 .progress-fill {
     background: #2ecc71;
