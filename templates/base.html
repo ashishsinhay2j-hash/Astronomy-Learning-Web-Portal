@@ -66,25 +66,24 @@ body {
     font-size: 16px;      /* added */
     display: inline-block;
 }
-
 .option-box {
     display: flex;
     align-items: center;
+    gap: 12px; /* space between radio and text */
     padding: 12px;
     background: #0b0c2a;
     border: 1px solid #333;
     border-radius: 8px;
     cursor: pointer;
-    transition: 0.2s;
 }
+
 
 .option-box:hover {
     border-color: var(--primary);
 }
 
-.option-box input:checked + * {
-    color: var(--primary);
-    font-weight: bold;
+.option-box input {
+    transform: scale(1.2);
 }
 /* PROGRESS */
 .progress-fill {

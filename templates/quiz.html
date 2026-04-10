@@ -18,7 +18,7 @@
                 {% for opt in q.options %}
                 <label class="option-box">
     <input type="radio" name="q{{ q.question_id }}" value="{{ opt.option_id }}">
-    {{ opt.option_text }}
+    <span>{{ opt.option_text }}</span>
 </label>
                 {% endfor %}
             </div>
