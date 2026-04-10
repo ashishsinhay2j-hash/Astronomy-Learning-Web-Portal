@@ -66,7 +66,25 @@ body {
     text-decoration: none;
     display: inline-block;
 }
+.option-box {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: #0b0c2a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
+.option-box:hover {
+    border-color: var(--primary);
+}
+
+.option-box input:checked + * {
+    color: var(--primary);
+    font-weight: bold;
+}
 /* PROGRESS */
 .progress-fill {
     background: #2ecc71;

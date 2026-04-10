@@ -435,11 +435,21 @@ def courses():
 #----------------- Courses ----------------
 
 #----------------- QUIZ----------------
-@app.route("/quiz/<int:quiz_id>", methods=["GET","POST"])
+@app.route("/quiz/<int:course_id>", methods=["GET","POST"])
 @login_required
-def quiz(quiz_id):
+def quiz(course_id):
+
     db = get_db()
     cursor = db.cursor(dictionary=True)
+
+    # 🔥 Get quiz using course_id
+    cursor.execute("SELECT * FROM quizzes WHERE course_id=%s", (course_id,))
+    quiz = cursor.fetchone()
+
+    if not quiz:
+        return "Quiz not found"
+
+    quiz_id = quiz["quiz_id"]
 
     # Get questions
     cursor.execute("SELECT * FROM questions WHERE quiz_id=%s", (quiz_id,))
@@ -453,7 +463,6 @@ def quiz(quiz_id):
         score = 0
         total = len(questions)
 
-        # Create attempt
         cursor.execute(
             "INSERT INTO quiz_attempts (user_id, quiz_id, score, total) VALUES (%s,%s,0,%s)",
             (session["user_id"], quiz_id, total)
@@ -462,7 +471,6 @@ def quiz(quiz_id):
 
         attempt_id = cursor.lastrowid
 
-        # Check answers
         for q in questions:
             selected = request.form.get(f"q{q['question_id']}")
 
@@ -473,13 +481,11 @@ def quiz(quiz_id):
                 if opt and opt["is_correct"]:
                     score += 1
 
-                # Save answer
                 cursor.execute(
                     "INSERT INTO user_answers (attempt_id, question_id, selected_option) VALUES (%s,%s,%s)",
                     (attempt_id, q["question_id"], selected)
                 )
 
-        # Update score
         cursor.execute(
             "UPDATE quiz_attempts SET score=%s WHERE attempt_id=%s",
             (score, attempt_id)
@@ -495,6 +501,7 @@ def quiz(quiz_id):
     db.close()
 
     return render_template("quiz.html", questions=questions, quiz_id=quiz_id)
+
 
 
 # ---------------- CERTIFICATE ----------------
