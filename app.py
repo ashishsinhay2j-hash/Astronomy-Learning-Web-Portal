@@ -500,7 +500,11 @@ def quiz(course_id):
     cursor.close()
     db.close()
 
-    return render_template("quiz.html", questions=questions, quiz_id=quiz_id)
+    return render_template(
+    "quiz.html",
+    questions=questions,
+    course_id=course_id   # send course_id instead
+)
 
 
 
