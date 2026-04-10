@@ -6,7 +6,7 @@
         <i class="fas fa-brain"></i> Mission Assessment
     </h2>
 
-  <form method="POST" action="{{ url_for('quiz', course_id=course_id) }}">
+    <form method="POST" action="{{ url_for('quiz', course_id=course_id) }}">
         {% for q in questions %}
         <div style="margin-bottom: 35px; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 10px;">
             <p style="font-size: 1.1rem; margin-top: 0;">
@@ -17,15 +17,15 @@
             <div style="margin-top: 15px; display: grid; gap: 10px;">
                 {% for opt in q.options %}
                 <label class="option-box">
-              <div class="option-inner">
-        <input type="radio" name="q{{ q.question_id }}" value="{{ opt.option_id }}" required>
-        <span class="option-text">{{ opt.option_text }}</span>
-    </div>
-</label>
-            
+                    <div class="option-inner">
+                        <input type="radio" name="q{{ q.question_id }}" value="{{ opt.option_id }}" required>
+                        <span class="option-text">{{ opt.option_text }}</span>
+                    </div>
+                </label>
+                {% endfor %} {# <-- FIXED: Added missing endfor for options #}
             </div>
-        
-        {% endfor %}
+        </div>
+        {% endfor %} {# <-- FIXED: Moved inside the form #}
 
         {% if questions|length > 0 %}
             <button type="submit" class="btn" style="width: 100%; padding: 15px; font-size: 1.1rem;">
