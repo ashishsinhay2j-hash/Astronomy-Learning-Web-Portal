@@ -91,11 +91,11 @@ def login():
         role = request.form.get("role")
 
         if not email or not password:
-          return render_template("login.html", error="Email and password required")
+            return render_template("login.html", error="Email and password required")
 
         if not role:
-          return render_template("login.html", error="Please select a role")
-          
+            return render_template("login.html", error="Please select a role")
+
         selected_role = int(role)
 
         db = get_db()
@@ -105,13 +105,19 @@ def login():
         user = cursor.fetchone()
 
         if user:
-            # support both hashed + plain password
-             if check_password_hash(user["password"], password):
+            if check_password_hash(user["password"], password):
 
                 if user["role_id"] == selected_role:
                     session["user"] = user["username"]
                     session["user_id"] = user["user_id"]
                     session["role"] = user["role_id"]
+
+                    # ✅ ADDED: activity log
+                    cursor.execute("""
+                        INSERT INTO activity_logs (user_id, action)
+                        VALUES (%s, 'User Logged In')
+                    """, (user["user_id"],))
+                    db.commit()
 
                     return redirect(
                         "/admin" if user["role_id"] == 1
@@ -140,8 +146,7 @@ def forgot():
 
         cursor.close()
         db.close()
-
-        return render_template("forgot.html", link=f"/reset/{token}")
+        return render_template("forgot.html", message="Reset link sent to email")
 
     return render_template("forgot.html")
 
@@ -442,8 +447,15 @@ def quiz(course_id):
     db = get_db()
     cursor = db.cursor(dictionary=True)
 
-    # 🔥 Get quiz using course_id
-    cursor.execute("SELECT * FROM quizzes WHERE course_id=%s", (course_id,))
+    # ✅ FIXED: supports both course_id and topic_id relation
+    cursor.execute("""
+        SELECT * FROM quizzes 
+        WHERE course_id=%s 
+        OR topic_id IN (
+            SELECT topic_id FROM topics WHERE course_id=%s
+        )
+    """, (course_id, course_id))
+
     quiz = cursor.fetchone()
 
     if not quiz:
@@ -490,6 +502,13 @@ def quiz(course_id):
             "UPDATE quiz_attempts SET score=%s WHERE attempt_id=%s",
             (score, attempt_id)
         )
+
+        # ✅ ADDED: activity log
+        cursor.execute("""
+            INSERT INTO activity_logs (user_id, action)
+            VALUES (%s, 'Completed Quiz')
+        """, (session["user_id"],))
+
         db.commit()
 
         cursor.close()
@@ -501,11 +520,10 @@ def quiz(course_id):
     db.close()
 
     return render_template(
-    "quiz.html",
-    questions=questions,
-    course_id=course_id   # send course_id instead
-)
-
+        "quiz.html",
+        questions=questions,
+        course_id=course_id
+    )
 
 
 # ---------------- CERTIFICATE ----------------
@@ -531,8 +549,40 @@ def certificate_page():
 
     return render_template("certificate.html", unlocked=unlocked, completed=completed, total=total)
     # get user name
- 
+#------------------ CERTIFICATE GENERATION ----------------
+@app.route("/certificate")
+@login_required
+def certificate():
 
+    filename = f"certificate_{session['user_id']}.pdf"
+
+    doc = SimpleDocTemplate(filename)
+    styles = getSampleStyleSheet()
+
+    elements = []
+
+    elements.append(Paragraph("Certificate of Completion", styles["Title"]))
+    elements.append(Spacer(1, 20))
+    elements.append(Paragraph(f"Presented to {session['user']}", styles["Normal"]))
+    elements.append(Spacer(1, 10))
+    elements.append(Paragraph("For successfully completing the course", styles["Normal"]))
+
+    doc.build(elements)
+
+    # 🔥 save in DB
+    db = get_db()
+    cursor = db.cursor()
+
+    cursor.execute("""
+        INSERT INTO certificates (user_id, pdf_path)
+        VALUES (%s,%s)
+    """, (session["user_id"], filename))
+
+    db.commit()
+    cursor.close()
+    db.close()
+
+    return send_file(filename, as_attachment=True)
     
 #---------------- Leaderboard ----------------
 @app.route("/leaderboard")
@@ -592,16 +642,42 @@ def complete(lesson_id):
     db = get_db()
     cursor = db.cursor()
 
-    cursor.execute(
-        "INSERT INTO progress (user_id, lesson_id, status) VALUES (%s,%s,'completed')",
-        (session["user_id"], lesson_id)
-    )
+    cursor.execute("""
+    INSERT IGNORE INTO progress (user_id, lesson_id, status) 
+    VALUES (%s,%s,'completed')
+""", (session["user_id"], lesson_id))
     db.commit()
 
     cursor.close()
     db.close()
 
     return redirect("/dashboard")
+#----------------- ADD OPTION ----------------
+@app.route("/add_option", methods=["GET","POST"])
+@login_required
+@roles_required(3)
+def add_option():
+
+    if request.method == "POST":
+        question_id = request.form["question_id"]
+        option_text = request.form["option_text"]
+        is_correct = request.form["is_correct"]
+
+        db = get_db()
+        cursor = db.cursor()
+
+        cursor.execute("""
+            INSERT INTO options (question_id, option_text, is_correct)
+            VALUES (%s,%s,%s)
+        """, (question_id, option_text, is_correct))
+
+        db.commit()
+        cursor.close()
+        db.close()
+
+        return redirect("/teacher")
+
+    return render_template("add_option.html")
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
